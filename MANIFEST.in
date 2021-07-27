@@ -1,0 +1,7 @@
+graft len8
+include LICENSE
+include pyproject.toml
+include README.md
+include requirements-dev.txt
+include setup.py
+global-exclude *.py[cod]
