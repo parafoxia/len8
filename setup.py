@@ -1,11 +1,11 @@
 import sys
 
-if sys.version_info < (3, 6, 0):
-    print(
-        "len8 only supports Python versions 3.6.0 or greater.",
-        file=sys.stderr,
-    )
-    sys.exit(1)
+# if sys.version_info < (3, 6, 0):
+#     print(
+#         "len8 only supports Python versions 3.6.0 or greater.",
+#         file=sys.stderr,
+#     )
+#     sys.exit(1)
 
 import setuptools
 
