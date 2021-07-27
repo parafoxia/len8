@@ -1,5 +1,8 @@
 import nox
 
+# nox can only perform tests for 3.5 and up
+versions = ["3.%s" % (v,) for v in range(5, 11)]
+
 
 def parse_requirements(path):
     with open(path, mode="r", encoding="utf-8") as f:
@@ -7,8 +10,10 @@ def parse_requirements(path):
         return [d for d in deps if not d.startswith(("#", "-r"))]
 
 
-@nox.session(python=["3.6", "3.7", "3.8", "3.9"], reuse_venv=True)
+@nox.session(python=versions, reuse_venv=True)
 def tests(session: nox.Session) -> None:
+    deps = parse_requirements("./requirements-test.txt")
+    session.install(*deps)
     session.run("pytest", "-s", "--verbose", "--log-level=INFO")
 
 

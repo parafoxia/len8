@@ -1,11 +1,11 @@
 import sys
 
-# if sys.version_info < (3, 6, 0):
-#     print(
-#         "len8 only supports Python versions 3.6.0 or greater.",
-#         file=sys.stderr,
-#     )
-#     sys.exit(1)
+if sys.version_info < (3, 0, 0):
+    print(
+        "len8 only supports Python versions 3.0.0 or greater.",
+        file=sys.stderr,
+    )
+    sys.exit(1)
 
 import setuptools
 
@@ -43,9 +43,9 @@ setuptools.setup(
     classifiers=[
         # "Development Status :: 1 - Planning",
         # "Development Status :: 2 - Pre-Alpha",
-        # "Development Status :: 3 - Alpha",
+        "Development Status :: 3 - Alpha",
         # "Development Status :: 4 - Beta",
-        "Development Status :: 5 - Production/Stable",
+        # "Development Status :: 5 - Production/Stable",
         "Environment :: Console",
         "Intended Audience :: Developers",
         "License :: OSI Approved :: BSD License",
@@ -56,11 +56,18 @@ setuptools.setup(
         "Operating System :: Unix",
         "Programming Language :: Python :: 3",
         "Programming Language :: Python :: 3 :: Only",
+        "Programming Language :: Python :: 3.0",
+        "Programming Language :: Python :: 3.1",
+        "Programming Language :: Python :: 3.2",
+        "Programming Language :: Python :: 3.3",
+        "Programming Language :: Python :: 3.4",
+        "Programming Language :: Python :: 3.5",
         "Programming Language :: Python :: 3.6",
         "Programming Language :: Python :: 3.7",
         "Programming Language :: Python :: 3.8",
         "Programming Language :: Python :: 3.9",
         "Programming Language :: Python :: 3.10",
+        "Programming Language :: Python :: Implementation :: CPython",
         "Topic :: Utilities",
     ],
     project_urls={
@@ -72,6 +79,6 @@ setuptools.setup(
     extras_require={
         "dev": parse_requirements("./requirements-dev.txt"),
     },
-    python_requires=">=3.6.0",
+    python_requires=">=3.0.0",
     packages=setuptools.find_packages(exclude=["tests*"]),
 )
