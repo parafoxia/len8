@@ -40,6 +40,11 @@ setuptools.setup(
     url=url,
     author=author,
     license=license_,
+    entry_points = {
+        "console_scripts": [
+            "len8 = len8.__main__:main"
+        ]
+    },
     classifiers=[
         # "Development Status :: 1 - Planning",
         # "Development Status :: 2 - Pre-Alpha",
