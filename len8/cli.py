@@ -1,78 +1,77 @@
-from .errors import BadLines
-from .errors import MissingArgument
+import argparse
+import os
+import re
+import sys
 
+from .errors import InvalidFile, BadLines
 from len8 import check
 
 
-HELP_MESSAGE = """USAGE: len8 [OPTIONS] path
+def main():
+    parser = argparse.ArgumentParser(
+        description=(
+            "a utility for keeping line lengths within PEP 8 standards"
+        ),
+    )
 
-OPTIONS:
-    -f, --file:     Parse only a single file.
-    -l, --length:   Increase acceptable line length to 99.
-    -x, --exclude:  Exclude the following file(s) or dir(s).
-"""
+    parser.add_argument("path")
+    parser.add_argument(
+        "-f", "--file", help="parse only a single file.", default=False,
+        action="store_true",
+    )
+    parser.add_argument(
+        "-x", action="extend", metavar="filepath",
+        nargs=1, default=[".venv", "venv"],
+        help="file to exclude from parsing (accepts 1 file per -x flag)",
+    )
+    parser.add_argument(
+        "-l", "--length", help="increase acceptable line length to 99",
+        default=False, action="store_true",
+    )
+
+    args = parser.parse_args()
+
+    if args.file:
+        matches = re.match(
+            "^([\.\/\w].*\/?.*)\/(\w+\.pyw?)|(\w+\.pyw?)$", args.path
+        )
+
+        if not matches:
+            return print(InvalidFile(args.path))
+
+        groups = matches.groups()
+        print(groups)
+
+        if groups[2]:
+            exclude = os.listdir(".")
+            exclude.remove(groups[2])
+            args.x.extend(exclude)
+            args.path = os.curdir
+
+        else:
+            try:
+                exclude = os.listdir(groups[0])
+                exclude.remove(groups[1])
+                args.x.extend(exclude)
+                args.path = groups[0]
+                print(args.x)
+            except FileNotFoundError as e:
+                return print(e)
+
+            print("args path", args.path)
+
+    else:
+        pass
+        # TODO continue on this line.
+        # something is still buggy with the file paths though.
 
 
-def cli(args):
-    if not args or "-h" in args or "--help" in args:
-        return print(HELP_MESSAGE)
-
-    f_flag = ("-f", "--file")
-    l_flag = ("-l", "--length")
-    x_flag = ("-x", "--exclude")
-
-    exclude = []
-    excluding = False
-    extend = False
-    file = None
-    filing = False
-    path = None
-
-    if args[0] not in (x_flag + l_flag + f_flag):
-        path = args.pop(0)
-
-        for arg in args:
-            if arg in x_flag:
-                excluding = True
-
-            elif excluding and arg not in (l_flag + f_flag):
-                exclude.append(arg)
-
-            elif filing and arg not in (x_flag + l_flag):
-                file = arg
-                filing = False
-
-            elif arg in l_flag:
-                if excluding:
-                    excluding = False
-
-                extend = True
-
-            elif arg in f_flag:
-                if excluding:
-                    excluding = False
-
-                filing = True
-
-        if filing:
-            raise MissingArgument("file")
-
-
-    elif args[0] in l_flag:
-        args.pop(0)
-        extend = True
-
-        for arg in args:
-            if arg in f_flag:
-                pass
-
-        # TODO continue this maze of logic.
-        # jax is cute
-
-    # if file:
-    #     check(file, extend=extend)
 
     try:
-        check(path, exclude=exclude, extend=extend)
+        check(args.path, exclude=args.x, extend=args.length)
     except BadLines as e:
         print(e)
+
+
+if __name__ == "__main__":
+    main()

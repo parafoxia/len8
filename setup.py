@@ -40,11 +40,6 @@ setuptools.setup(
     url=url,
     author=author,
     license=license_,
-    entry_points = {
-        "console_scripts": [
-            "len8 = len8.__main__:main"
-        ]
-    },
     classifiers=[
         # "Development Status :: 1 - Planning",
         # "Development Status :: 2 - Pre-Alpha",
@@ -83,6 +78,11 @@ setuptools.setup(
     # install_requires=parse_requirements("./requirements.txt"),
     extras_require={
         "dev": parse_requirements("./requirements-dev.txt"),
+    },
+    entry_points = {
+        "console_scripts": [
+            "len8 = len8.cli:main"
+        ]
     },
     python_requires=">=3.0.0",
     packages=setuptools.find_packages(exclude=["tests*"]),

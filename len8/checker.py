@@ -3,7 +3,7 @@ import os
 from .errors import BadLines
 
 
-def check(path, exclude=[], extend=False, file=None):
+def check(path, exclude=[], extend=False):
     bad_lines = []
     in_docs = False
 
