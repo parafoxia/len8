@@ -1,11 +1,12 @@
 import os
 
-from .errors import BadLines
+from .errors import BadLines, InvalidFile
 
 
-def check(path, exclude=[], extend=False, file_=False):
+def check(path, exclude=[], extend=False, file_=""):
     bad_lines = []
     in_docs = False
+    checked = False
 
     for subdir, _, files in os.walk(path):
         if not any((e for e in exclude if e in subdir)):
@@ -22,6 +23,9 @@ def check(path, exclude=[], extend=False, file_=False):
                 )
 
             for file in valid:
+                if not checked:
+                    checked = True
+
                 bad_lines, in_docs = validate_file(
                     subdir, file, extend, bad_lines, in_docs
                 )
@@ -34,6 +38,9 @@ def check(path, exclude=[], extend=False, file_=False):
                 for file, line, chars, limit in bad_lines
             )
         )
+
+    if not checked:
+        print(InvalidFile(path + file_))
 
     return True
 
