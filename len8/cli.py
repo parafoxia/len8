@@ -21,6 +21,12 @@ def handle_when_file(args):
     return args.path, file
 
 
+def gather_excludes(e):
+    excludes = [".venv", "venv"]
+    excludes.extend(e.split(","))
+    return excludes
+
+
 def main():
     parser = argparse.ArgumentParser(
         description=("a utility for keeping line lengths within PEP 8 standards"),
@@ -35,11 +41,11 @@ def main():
     )
     parser.add_argument(
         "-x",
-        action="extend",
         metavar="filepath",
+        type=gather_excludes,
         nargs=1,
         default=[".venv", "venv"],
-        help="file to exclude from parsing (accepts 1 file per -x flag)",
+        help="comma separated list of files to exclude",
     )
     parser.add_argument(
         "-l",
@@ -50,6 +56,8 @@ def main():
     )
     args = parser.parse_args()
 
+    if len(args.x) == 1:
+        args.x = args.x[0]
     if args.file:
         path, file = handle_when_file(args)
     else:
