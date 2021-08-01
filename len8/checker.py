@@ -55,14 +55,10 @@ def validate_file(subdir, file, extend, bad_lines, in_docs):
         if ls.startswith('"""'):
             in_docs = True
 
-        limit = 72 if in_docs or ls.startswith("#") else (
-            99 if extend else 79
-        )
+        limit = 72 if in_docs or ls.startswith("#") else (99 if extend else 79)
         chars = len(rs)
         if chars > limit:
-            bad_lines.append(
-                ("%s/%s" % (subdir, file), i + 1, chars, limit)
-            )
+            bad_lines.append(("%s/%s" % (subdir, file), i + 1, chars, limit))
 
         if rs.endswith('"""'):
             in_docs = False
