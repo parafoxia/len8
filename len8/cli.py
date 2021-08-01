@@ -6,7 +6,9 @@ from .checker import check
 
 
 def handle_when_file(args):
-    matches = re.match("^([~?\.\/\w].*)\/(\w+\.pyw?)$|^(\w+\.pyw?)$", args.path)
+    matches = re.match(
+        "^([~?\.\/\w].*)\/(\w+\.pyw?)$|^(\w+\.pyw?)$", args.path
+    )
     if not matches:
         return InvalidFile(args.path)
 
@@ -29,7 +31,9 @@ def gather_excludes(e):
 
 def main():
     parser = argparse.ArgumentParser(
-        description=("a utility for keeping line lengths within PEP 8 standards"),
+        description=(
+            "a utility for keeping line lengths within PEP 8 standards"
+        ),
     )
     parser.add_argument("path")
     parser.add_argument(
