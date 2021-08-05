@@ -49,7 +49,7 @@ def main():
         type=gather_excludes,
         nargs=1,
         default=[".venv", "venv"],
-        help="comma separated list of files to exclude",
+        help="comma separated list of files/dirs to exclude",
     )
     parser.add_argument(
         "-l",

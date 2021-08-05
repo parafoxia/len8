@@ -10,19 +10,12 @@ def check(path, exclude=[], extend=False, file_=""):
 
     for subdir, _, files in os.walk(path):
         if not any((e for e in exclude if e in subdir)):
-            if file_:
-                valid = filter(
-                    lambda f: f.endswith(file_) and f not in exclude,
-                    files
-                )
-
-            else:
-                valid = filter(
-                    lambda f: f.endswith((".py", ".pyw")) and f not in exclude,
-                    files
-                )
-
-            for file in valid:
+            for file in filter(
+                lambda f: f.endswith(
+                    file_ if file_ else (".py", ".pyw")
+                ) and f not in exclude,
+                files
+            ):
                 if not checked:
                     checked = True
 
