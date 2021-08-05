@@ -32,8 +32,8 @@ def check(path, exclude=[], extend=False, file_=""):
             )
         )
 
-    if not checked:
-        print(InvalidFile(path + file_))
+    if not checked and file_:
+        raise InvalidFile("/".join((path, file_)))
 
     return True
 

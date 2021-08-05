@@ -9,13 +9,16 @@ def handle_when_file(args):
     matches = re.match(
         "^([~?\.\/\w].*)\/(\w+\.pyw?)$|^(\w+\.pyw?)$", args.path
     )
+
     if not matches:
         return InvalidFile(args.path)
 
     groups = matches.groups()
+
     if groups[2]:
         args.path = "."
         file = groups[2]
+
     else:
         args.path = groups[0]
         file = groups[1]
@@ -58,19 +61,27 @@ def main():
         default=False,
         action="store_true",
     )
+
     args = parser.parse_args()
 
     if len(args.x) == 1:
         args.x = args.x[0]
+
     if args.file:
-        path, file = handle_when_file(args)
+        handler = handle_when_file(args)
+
+        if isinstance(handler, InvalidFile):
+            return handler
+
+        path, file = handler
+
     else:
         path = args.path
         file = ""
 
     try:
         check(path, exclude=args.x, extend=args.length, file_=file)
-    except BadLines as e:
+    except (BadLines, InvalidFile) as e:
         print(e)
 
 
