@@ -13,7 +13,7 @@ def check(path, exclude=[], extend=False, file_=""):
             for file in filter(
                 lambda f: f.endswith(
                     file_ if file_ else (".py", ".pyw")
-                ) and f not in exclude,
+                ) and f not in exclude and subdir == path if file_ else True,
                 files
             ):
                 if not checked:

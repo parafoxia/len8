@@ -42,7 +42,7 @@ def main():
     parser.add_argument(
         "-f",
         "--file",
-        help="parse only files with a certain name.",
+        help="parse a single file",
         default=False,
         action="store_true",
     )
