@@ -61,13 +61,6 @@ def main():
         default=False,
         action="store_true",
     )
-    parser.add_argument(
-        "-p",
-        "--pattern",
-        help="enable regular expressions in the path argument",
-        default=False,
-        action="store_true",
-    ) # TODO implement this
 
     args = parser.parse_args()
 
