@@ -27,7 +27,7 @@ def handle_when_file(args):
 
 
 def gather_excludes(e):
-    excludes = [".venv", "venv"]
+    excludes = [".venv", "venv", ".nox"]
     excludes.extend(e.split(","))
     return excludes
 
@@ -51,7 +51,7 @@ def main():
         metavar="filepath",
         type=gather_excludes,
         nargs=1,
-        default=[".venv", "venv"],
+        default=[".venv", "venv", ".nox"],
         help="comma separated list of files/dirs to exclude",
     )
     parser.add_argument(
