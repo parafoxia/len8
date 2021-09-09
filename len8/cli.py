@@ -48,6 +48,7 @@ def main():
     )
     parser.add_argument(
         "-x",
+        "--exclude",
         metavar="filepath",
         type=gather_excludes,
         nargs=1,
@@ -64,8 +65,8 @@ def main():
 
     args = parser.parse_args()
 
-    if len(args.x) == 1:
-        args.x = args.x[0]
+    if len(args.exclude) == 1:
+        args.exclude = args.exclude[0]
 
     if args.file:
         handler = handle_when_file(args)
@@ -80,7 +81,7 @@ def main():
         file = ""
 
     try:
-        check(path, exclude=args.x, extend=args.length, file_=file)
+        check(path, exclude=args.exclude, extend=args.length, file_=file)
     except (BadLines, InvalidFile) as e:
         print(e)
 
