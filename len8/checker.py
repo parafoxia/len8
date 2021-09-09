@@ -5,11 +5,10 @@ from .errors import BadLines, InvalidFile
 
 def check(path, exclude=[], extend=False, file_=""):
     bad_lines = []
-    in_docs = False
     checked = False
 
     for subdir, _, files in os.walk(path):
-        if not any((e for e in exclude if e in subdir)):
+        if not any(e for e in exclude if e in subdir):
             for file in filter(
                 lambda f: f.endswith(file_ if file_ else (".py", ".pyw"))
                 and (subdir == path if file_ else True)
@@ -19,8 +18,8 @@ def check(path, exclude=[], extend=False, file_=""):
                 if not checked:
                     checked = True
 
-                bad_lines, in_docs = validate_file(
-                    subdir, file, extend, bad_lines, in_docs
+                bad_lines = validate_file(
+                    subdir, file, extend, bad_lines
                 )
 
     if bad_lines:
@@ -38,14 +37,22 @@ def check(path, exclude=[], extend=False, file_=""):
     return True
 
 
-def validate_file(subdir, file, extend, bad_lines, in_docs):
+def validate_file(subdir, file, extend, bad_lines):
     io = open("%s/%s" % (subdir, file))
+    in_docs = False
+    in_license = True
 
     for i, line in enumerate(io):
         ls = line.lstrip()
         rs = line.rstrip()
 
-        if ls.startswith('"""'):
+        if in_license:
+            if ls.startswith("#"):
+                continue
+
+            in_license = False
+
+        if ls.startswith(('"""', 'r"""')):
             in_docs = True
 
         limit = 72 if in_docs or ls.startswith("#") else (99 if extend else 79)
@@ -58,4 +65,4 @@ def validate_file(subdir, file, extend, bad_lines, in_docs):
 
     io.close()
 
-    return bad_lines, in_docs
+    return bad_lines

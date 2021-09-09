@@ -1,8 +1,9 @@
 import argparse
 import re
+import sys
 
-from .errors import InvalidFile, BadLines
 from .checker import check
+from .errors import BadLines, InvalidFile
 
 
 def handle_when_file(args):
@@ -84,6 +85,7 @@ def main():
         check(path, exclude=args.exclude, extend=args.length, file_=file)
     except (BadLines, InvalidFile) as e:
         print(e)
+        sys.exit(1)
 
 
 if __name__ == "__main__":
