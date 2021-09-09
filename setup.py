@@ -26,7 +26,7 @@ with open("len8/__init__.py", mode="r", encoding="utf-8") as f:
         author,
         license_,
         bug_tracker,
-    ) = [l.split('"')[1] for l in f.readlines()[:8]]
+    ) = [l.split('"')[1] for l in f.readlines()[28:36]]
 
 with open("./README.md", mode="r", encoding="utf-8") as f:
     long_description = f.read()
@@ -56,8 +56,6 @@ setuptools.setup(
         "Operating System :: Unix",
         "Programming Language :: Python :: 3",
         "Programming Language :: Python :: 3 :: Only",
-        "Programming Language :: Python :: 3.0",
-        "Programming Language :: Python :: 3.1",
         "Programming Language :: Python :: 3.2",
         "Programming Language :: Python :: 3.3",
         "Programming Language :: Python :: 3.4",
@@ -76,10 +74,10 @@ setuptools.setup(
         "Bug Tracker": bug_tracker,
     },
     # install_requires=parse_requirements("./requirements.txt"),
-    extras_require={
-        "dev": parse_requirements("./requirements-dev.txt"),
-    },
+    # extras_require={
+    #     "dev": parse_requirements("./requirements-dev.txt"),
+    # },
     entry_points={"console_scripts": ["len8 = len8.cli:main"]},
-    python_requires=">=3.0.0",
+    python_requires=">=3.2.0",
     packages=setuptools.find_packages(exclude=["tests*"]),
 )
