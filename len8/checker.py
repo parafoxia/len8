@@ -35,18 +35,19 @@ def check(path, exclude=[], extend=False, file_=""):
     bad_lines = []
     checked = False
 
-    for subdir, _, files in os.walk(path):
-        if not any(e for e in exclude if e in subdir):
-            for file in filter(
-                lambda f: f.endswith(file_ if file_ else (".py", ".pyw"))
-                and (subdir == path if file_ else True)
-                and f not in exclude,
-                files,
-            ):
-                if not checked:
-                    checked = True
+    for p in path:
+        for subdir, _, files in os.walk(p):
+            if not any(e for e in exclude if e in subdir):
+                for file in filter(
+                    lambda f: f.endswith(file_ if file_ else (".py", ".pyw"))
+                    and (subdir == p if file_ else True)
+                    and f not in exclude,
+                    files,
+                ):
+                    if not checked:
+                        checked = True
 
-                bad_lines = validate_file(subdir, file, extend, bad_lines)
+                    bad_lines = validate_file(subdir, file, extend, bad_lines)
 
     if bad_lines:
         raise BadLines(
@@ -58,7 +59,7 @@ def check(path, exclude=[], extend=False, file_=""):
         )
 
     if not checked and file_:
-        raise InvalidFile("/".join((path, file_)))
+        raise InvalidFile("/".join((p, file_)))
 
     return True
 

@@ -67,7 +67,7 @@ def main():
             "a utility for keeping line lengths within PEP 8 standards"
         ),
     )
-    parser.add_argument("path")
+    parser.add_argument("path", nargs="+")
     parser.add_argument(
         "-f",
         "--file",
