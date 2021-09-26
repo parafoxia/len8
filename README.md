@@ -17,7 +17,7 @@ A utility for keeping line lengths within [PEP 8](https://www.python.org/dev/pep
 ## Features
 
 - An easy-to-use CLI (command-line interface)
-- Parse either a single file or a directory
+- Parse a single file, directory, or multiple directories
 - Exclude files and directories from parsing
 - Extend acceptable length to 99 chars situationally
 - No dependencies!
@@ -45,6 +45,9 @@ To get started checking your python projects with len8:
 ```sh
 # Parse all files in the cwd
 len8 .
+
+# Parse all files in two particular directories
+len8 my_package tests
 
 # Excluding file 'config.py' and directory 'secrets'
 # By default '.venv', 'venv', and '.nox' are excluded
