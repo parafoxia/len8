@@ -4,7 +4,7 @@
 [![PyPI pyversions](https://img.shields.io/pypi/pyversions/len8.svg)](https://pypi.python.org/pypi/len8/)
 [![PyPI - Implementation](https://img.shields.io/pypi/implementation/len8)](https://pypi.python.org/pypi/len8/)
 [![PyPI - Status](https://img.shields.io/pypi/status/len8)](https://pypi.python.org/pypi/len8/)
-[![PyPI - Downloads](https://img.shields.io/pypi/dm/len8)](https://pypistats.org/packages/len8)
+[![Downloads](https://pepy.tech/badge/len8)](https://pepy.tech/project/len8)
 
 [![Maintenance](https://img.shields.io/maintenance/yes/2021)](https://github.com/parafoxia/len8)
 [![GitHub Release Date](https://img.shields.io/github/release-date/parafoxia/len8)](https://github.com/parafoxia/len8)
@@ -33,7 +33,7 @@ pip install len8
 
 You can also install the latest development version using the following command:
 ```sh
-pip install git+https://github.com/parafoxia/len8.git@develop
+pip install git+https://github.com/parafoxia/len8@develop
 ```
 
 You may need to prefix these commands with a call to the Python interpreter depending on your OS and Python configuration.
