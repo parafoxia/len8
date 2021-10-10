@@ -35,8 +35,10 @@ from .errors import BadLines, InvalidFile
 
 
 def handle_when_file(args):
+    args.path = args.path[0]
+
     matches = re.match(
-        "^([~?\.\/\w].*)\/(\w+\.pyw?)$|^(\w+\.pyw?)$", args.path
+        r"^([~?\.\/\w].*)\/(\w+\.pyw?)$|^(\w+\.pyw?)$", args.path
     )
 
     if not matches:
