@@ -36,7 +36,8 @@ class Checker:
 
     Args:
         exclude: list[str]
-            A list of paths to exclude from checking. Defaults to [].
+            A list of paths to exclude from checking. Defaults to
+            [".nox", ".venv", "venv"].
         extend: bool
             Whether or not to increase acceptable line length to 99.
             Defaults to False.
@@ -45,7 +46,12 @@ class Checker:
             to True.
     """
 
-    def __init__(self, exclude=[], extend=False, strict=True):
+    def __init__(
+        self,
+        exclude=[".nox", ".venv", "venv"],
+        extend=False,
+        strict=True
+    ):
         self._bad_lines = []
         self._exclude = exclude
         self._extend = extend
@@ -83,12 +89,12 @@ class Checker:
         """
         return self._strict
 
-    def check(self, path):
+    def check(self, *path):
         """Checks to ensure line lengths conform to PEP 8 standards.
 
         Args:
-            path: str | list[str]
-                The path or list of paths to check.
+            path: str
+                The path or paths to check. This arg is greedy.
 
         Raises:
             len8.InvalidPath:
