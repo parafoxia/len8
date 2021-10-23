@@ -32,11 +32,11 @@ class Len8Error(Exception):
 
 
 class BadLines(Len8Error):
-    """Raised when a file lines are too long."""
+    """Raised when a file contains lines that are too long."""
 
 
 class InvalidPath(Len8Error):
-    """Raised when an invalid path is passed to len8."""
+    """Raised when an invalid path is passed to be checked."""
 
     def __init__(self, arg):
         self.arg = arg
