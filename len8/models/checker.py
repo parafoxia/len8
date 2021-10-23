@@ -28,7 +28,7 @@
 
 import os
 
-from len8.models import errors
+from len8 import errors
 
 
 class Checker:

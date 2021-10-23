@@ -27,55 +27,58 @@
 # OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 import argparse
-import re
-import sys
-
-from len8 import Checker, BadLines, InvalidPath
 
 
-def gather_excludes(e):
-    excludes = [".venv", "venv", ".nox"]
-    excludes.extend(e.split(","))
-    return excludes
+class Parser:
+    """Parser used when len8 is invoked from the command line."""
 
+    def __init__(self):
+        self._parser = argparse.ArgumentParser(
+            description=(
+                "a utility for keeping line lengths within PEP 8 standards"
+            ),
+        )
+        self._parse()
 
-def main():
-    parser = argparse.ArgumentParser(
-        description=(
-            "a utility for keeping line lengths within PEP 8 standards"
-        ),
-    )
-    parser.add_argument("path", nargs="+")
-    parser.add_argument(
-        "-x",
-        "--exclude",
-        metavar="filepath",
-        type=gather_excludes,
-        nargs=1,
-        default=[".venv", "venv", ".nox"],
-        help="comma separated list of files/dirs to exclude",
-    )
-    parser.add_argument(
-        "-l",
-        "--length",
-        help="increase acceptable line length to 99",
-        default=False,
-        action="store_true",
-    )
+    @property
+    def exclude(self):
+        """A list of files/dirs to exclude."""
+        if len(self._args.exclude) == 1:
+            return self._args.exclude[0]
 
-    args = parser.parse_args()
+        return self._args.exclude
 
-    if len(args.exclude) == 1:
-        args.exclude = args.exclude[0]
+    @property
+    def extend(self):
+        """Whether or not to increase acceptable line length to 99."""
+        return self._args.length
 
-    try:
-        checker = Checker(exclude=args.exclude, extend=args.length)
-        checker.check(args.path)
+    @property
+    def path(self):
+        """A list of paths provided to len8."""
+        return self._args.path
 
-    except (InvalidPath, BadLines) as e:
-        print(e)
-        sys.exit(1)
+    def _gather_excludes(self, e):
+        excludes = [".venv", "venv", ".nox"]
+        excludes.extend(e.split(","))
+        return excludes
 
-
-if __name__ == "__main__":
-    main()
+    def _parse(self):
+        self._parser.add_argument("path", nargs="+")
+        self._parser.add_argument(
+            "-x",
+            "--exclude",
+            metavar="filepath",
+            type=self._gather_excludes,
+            nargs=1,
+            default=[".venv", "venv", ".nox"],
+            help="comma separated list of files/dirs to exclude",
+        )
+        self._parser.add_argument(
+            "-l",
+            "--length",
+            help="increase acceptable line length to 99",
+            default=False,
+            action="store_true",
+        )
+        self._args = self._parser.parse_args()
