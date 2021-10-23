@@ -35,4 +35,4 @@ __author__ = "Ethan Henderson, Jonxslays"
 __license__ = "BSD-3-Clause"
 __bugtracker__ = "https://github.com/parafoxia/len8/issues"
 
-from .checker import check
+from .models import *

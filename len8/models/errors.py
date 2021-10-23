@@ -28,16 +28,18 @@
 
 
 class Len8Error(Exception):
-    pass
+    """Base exception all Len8 errors inherit from."""
 
 
 class BadLines(Len8Error):
-    pass
+    """Raised when a file lines are too long."""
 
 
-class InvalidFile(Len8Error):
+class InvalidPath(Len8Error):
+    """Raised when an invalid path is passed to len8."""
+
     def __init__(self, arg):
         self.arg = arg
 
     def __str__(self):
-        return "InvalidFile: '%s' is not a valid file" % self.arg
+        return "InvalidPath: '%s' is not a valid path" % self.arg
