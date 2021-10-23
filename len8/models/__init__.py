@@ -27,4 +27,4 @@
 # OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 from .checker import Checker
-from .errors import BadLines, InvalidPath
+from .parser import Parser

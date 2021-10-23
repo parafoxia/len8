@@ -26,14 +26,23 @@
 # OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 # OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-__productname__ = "len8"
-__version__ = "0.2.1"
-__description__ = "A utility for keeping line lengths within PEP 8 standards."
-__url__ = "https://github.com/parafoxia/len8"
-__docs__ = "https://len8.readthedocs.io/en/latest/"
-__author__ = "Ethan Henderson, Jonxslays"
-__license__ = "BSD-3-Clause"
-__bugtracker__ = "https://github.com/parafoxia/len8/issues"
+import sys
 
-from .errors import *
-from .models import Checker
+from len8.errors import BadLines, InvalidPath
+from len8.models import Checker, Parser
+
+
+def main():
+    parser = Parser()
+    checker = Checker(exclude=parser.exclude, extend=parser.extend)
+
+    try:
+        checker.check(parser.path)
+
+    except (BadLines, InvalidPath) as e:
+        print(e)
+        sys.exit(1)
+
+
+if __name__ == "__main__":
+    main()

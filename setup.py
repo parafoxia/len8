@@ -77,7 +77,7 @@ setuptools.setup(
     # extras_require={
     #     "dev": parse_requirements("./requirements-dev.txt"),
     # },
-    entry_points={"console_scripts": ["len8 = len8.cli:main"]},
+    entry_points={"console_scripts": ["len8 = len8.__main__:main"]},
     python_requires=">=3.2.0",
     packages=setuptools.find_packages(exclude=["tests*"]),
 )
