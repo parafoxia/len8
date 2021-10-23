@@ -47,10 +47,7 @@ class Checker:
     """
 
     def __init__(
-        self,
-        exclude=[".nox", ".venv", "venv"],
-        extend=False,
-        strict=True
+        self, exclude=[".nox", ".venv", "venv"], extend=False, strict=True
     ):
         self._bad_lines = []
         self._exclude = exclude
