@@ -26,56 +26,5 @@
 # OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 # OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-import argparse
-import re
-import sys
-
-from len8 import Checker, BadLines, InvalidPath
-
-
-def gather_excludes(e):
-    excludes = [".venv", "venv", ".nox"]
-    excludes.extend(e.split(","))
-    return excludes
-
-
-def main():
-    parser = argparse.ArgumentParser(
-        description=(
-            "a utility for keeping line lengths within PEP 8 standards"
-        ),
-    )
-    parser.add_argument("path", nargs="+")
-    parser.add_argument(
-        "-x",
-        "--exclude",
-        metavar="filepath",
-        type=gather_excludes,
-        nargs=1,
-        default=[".venv", "venv", ".nox"],
-        help="comma separated list of files/dirs to exclude",
-    )
-    parser.add_argument(
-        "-l",
-        "--length",
-        help="increase acceptable line length to 99",
-        default=False,
-        action="store_true",
-    )
-
-    args = parser.parse_args()
-
-    if len(args.exclude) == 1:
-        args.exclude = args.exclude[0]
-
-    try:
-        checker = Checker(exclude=args.exclude, extend=args.length)
-        checker.check(args.path)
-
-    except (InvalidPath, BadLines) as e:
-        print(e)
-        sys.exit(1)
-
-
-if __name__ == "__main__":
-    main()
+from .checker import Checker
+from .errors import BadLines, InvalidPath
