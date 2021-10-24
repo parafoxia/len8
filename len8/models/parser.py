@@ -42,7 +42,7 @@ class Parser:
 
     @property
     def exclude(self):
-        """A list of files/dirs to exclude."""
+        """The list of files/dirs to exclude."""
         if len(self._args.exclude) == 1:
             return self._args.exclude[0]
 
@@ -55,7 +55,7 @@ class Parser:
 
     @property
     def path(self):
-        """A list of paths provided to len8."""
+        """The list of paths to check."""
         return self._args.path
 
     def _gather_excludes(self, e):
