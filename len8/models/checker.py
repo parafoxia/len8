@@ -63,10 +63,11 @@ class Checker:
             return
 
         return (
-            "%d line(s) are too long:\n" % len(self._bad_lines)
-        ) + "\n".join(
-            "- %s, line %d (%d/%d)" % (file, line, chars, limit)
-            for file, line, chars, limit in self._bad_lines
+            f"len(self._bad_lines) line(s) are too long:\n"
+            + "\n".join(
+                f"- {file}, line {line} ({chars}/{limit})"
+                for file, line, chars, limit in self._bad_lines
+            )
         )
 
     @property
@@ -118,7 +119,7 @@ class Checker:
         return self.bad_lines
 
     def _check(self, subdir, file):
-        io = open("%s/%s" % (subdir, file))
+        io = open(f"{subdir}/{file}")
         in_docs = False
         in_license = True
 
@@ -145,7 +146,7 @@ class Checker:
             if chars > limit:
                 self._bad_lines.append(
                     (
-                        "%s/%s" % (os.path.abspath(subdir), file),
+                        f"{os.path.abspath(subdir)}/{file}",
                         i + 1,
                         chars,
                         limit,

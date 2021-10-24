@@ -42,4 +42,4 @@ class InvalidPath(Len8Error):
         self.arg = arg
 
     def __str__(self):
-        return "InvalidPath: '%s' is not a valid path" % self.arg
+        return f"InvalidPath: '{self.arg}' is not a valid path."
