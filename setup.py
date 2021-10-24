@@ -1,8 +1,8 @@
 import sys
 
-if sys.version_info < (3, 2, 0):
+if sys.version_info < (3, 6, 0):
     print(
-        "len8 only supports Python versions 3.2.0 or greater.",
+        "len8 only supports Python versions 3.6.0 or greater.",
         file=sys.stderr,
     )
     sys.exit(1)
@@ -56,10 +56,6 @@ setuptools.setup(
         "Operating System :: Unix",
         "Programming Language :: Python :: 3",
         "Programming Language :: Python :: 3 :: Only",
-        "Programming Language :: Python :: 3.2",
-        "Programming Language :: Python :: 3.3",
-        "Programming Language :: Python :: 3.4",
-        "Programming Language :: Python :: 3.5",
         "Programming Language :: Python :: 3.6",
         "Programming Language :: Python :: 3.7",
         "Programming Language :: Python :: 3.8",
@@ -78,6 +74,6 @@ setuptools.setup(
     #     "dev": parse_requirements("./requirements-dev.txt"),
     # },
     entry_points={"console_scripts": ["len8 = len8.__main__:main"]},
-    python_requires=">=3.2.0",
+    python_requires=">=3.6.0",
     packages=setuptools.find_packages(exclude=["tests*"]),
 )
