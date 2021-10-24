@@ -68,7 +68,7 @@ class Checker:
         if not self._bad_lines:
             return
 
-        return f"len(self._bad_lines) line(s) are too long:\n" + "\n".join(
+        return f"{len(self._bad_lines)} line(s) are too long:\n" + "\n".join(
             f"- {file}, line {line} ({chars}/{limit})"
             for file, line, chars, limit in self._bad_lines
         )
@@ -159,24 +159,27 @@ class Checker:
     def _check_dir(self, path: str) -> None:
         for subdir, _, files in os.walk(path):
             for file in filter(
-                lambda f: self._filter(os.path.abspath(subdir), f), files
+                lambda f: self._filter(os.path.abspath(subdir), f, path), files
             ):
                 self._check(subdir, file)
 
     def _check_file(self, path: str) -> None:
         subdir, file = self._split_path(path)
 
-        if self._filter(subdir, file):
+        if self._filter(subdir, file, path):
             self._check(subdir, file)
 
-    def _filter(self, subdir: str, file: str) -> bool:
+    def _filter(self, subdir: str, file: str, path: str) -> bool:
         if not file.endswith((".py", ".pyw")):
             return False
 
         for e in self.exclude:
             e_subdir, e_file = self._split_path(e)
 
-            if subdir.startswith(e_subdir) and e_file in subdir:
+            if f"{e_subdir}/{e_file}" in subdir:
+                return False
+
+            if f"{path}/{e_file}" in subdir:
                 return False
 
             if (subdir, file) == (e_subdir, e_file):
