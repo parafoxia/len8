@@ -99,8 +99,11 @@ class Checker:
 
         Raises:
             len8.InvalidPath:
-                If the given path does not exist. Can be disabled by
-                setting strict mode to False.
+                If strict mode is set to True and the given path does
+                not exist.
+            len8.BadLines:
+                If strict mode is set to True and the files that were
+                checked contained lines that were too long.
 
         Returns:
             str | None:
