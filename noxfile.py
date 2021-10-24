@@ -31,6 +31,6 @@ def check_formatting(session: nox.Session) -> None:
 
 
 @nox.session(reuse_venv=True)
-def check_types(session: nox.Session) -> None:
+def check_typing(session: nox.Session) -> None:
     session.install("-U", DEPS["pyright"])
     session.run("pyright")
