@@ -90,12 +90,12 @@ class Checker:
         """
         return self._strict
 
-    def check(self, *path: str) -> t.Optional[str]:
+    def check(self, *paths: str) -> t.Optional[str]:
         """Checks to ensure line lengths conform to PEP 8 standards.
 
         Args:
-            path: str
-                The path or paths to check. This arg is greedy.
+            *paths: str
+                The path or paths to check.
 
         Raises:
             len8.InvalidPath:
@@ -110,7 +110,7 @@ class Checker:
                 A formatted string containing the lines that were too
                 long, or None if there were none.
         """
-        for p in path:
+        for p in paths:
             if not os.path.exists(p) and self.strict:
                 raise errors.InvalidPath(p)
 

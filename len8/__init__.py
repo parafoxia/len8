@@ -34,10 +34,7 @@ __docs__ = "https://len8.readthedocs.io/en/latest/"
 __author__ = "Ethan Henderson, Jonxslays"
 __license__ = "BSD-3-Clause"
 __bugtracker__ = "https://github.com/parafoxia/len8/issues"
-
-import typing as t
+__all__ = ["BadLines", "Checker" ,"InvalidPath", "Len8Error"]
 
 from .errors import *
 from .models import Checker
-
-__all__: t.List[str] = ["BadLines", "Checker" ,"InvalidPath", "Len8Error"]

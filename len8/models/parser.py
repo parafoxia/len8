@@ -55,9 +55,9 @@ class Parser:
         return self._args.length
 
     @property
-    def path(self) -> t.List[str]:
+    def paths(self) -> t.List[str]:
         """The list of paths to check."""
-        return self._args.path
+        return self._args.paths
 
     def _gather_excludes(self, e: str) -> t.List[str]:
         excludes = [".venv", "venv", ".nox"]
@@ -65,7 +65,7 @@ class Parser:
         return excludes
 
     def _parse(self):
-        self._parser.add_argument("path", nargs="+")
+        self._parser.add_argument("paths", nargs="+")
         self._parser.add_argument(
             "-x",
             "--exclude",
