@@ -1,4 +1,5 @@
 import sys
+import typing as t
 
 if sys.version_info < (3, 6, 0):
     print(
@@ -10,7 +11,7 @@ if sys.version_info < (3, 6, 0):
 import setuptools
 
 
-def parse_requirements(path):
+def parse_requirements(path: str) -> t.List[str]:
     with open(path, mode="r", encoding="utf-8") as f:
         deps = (d.strip() for d in f.readlines())
         return [d for d in deps if not d.startswith(("#", "-r"))]
@@ -63,6 +64,7 @@ setuptools.setup(
         "Programming Language :: Python :: 3.10",
         "Programming Language :: Python :: Implementation :: CPython",
         "Topic :: Utilities",
+        "Typing :: Typed",
     ],
     project_urls={
         "Documentation": docs,
@@ -75,5 +77,5 @@ setuptools.setup(
     # },
     entry_points={"console_scripts": ["len8 = len8.__main__:main"]},
     python_requires=">=3.6.0",
-    packages=setuptools.find_packages(exclude=["tests*"]),
+    packages=setuptools.find_packages(include=["len8*"]),
 )

@@ -1,26 +1,36 @@
+import typing as t
+
 import nox
 
 
-def parse_requirements(path):
+def parse_requirements(path: str) -> t.List[str]:
     with open(path, mode="r", encoding="utf-8") as f:
         deps = (d.strip() for d in f.readlines())
-        return [d for d in deps if not d.startswith(("#", "-r"))]
+        return [d for d in deps if not d.startswith(("#", "-r", "."))]
+
+
+DEPS = {
+    dep.split("==")[0]: dep
+    for dep in [
+        *parse_requirements("./requirements-dev.txt"),
+        *parse_requirements("./requirements-test.txt"),
+    ]
+}
 
 
 @nox.session(reuse_venv=True)
 def tests(session: nox.Session) -> None:
-    deps = parse_requirements("./requirements-test.txt")
-    session.install(*deps)
+    session.install("-U", "-r", "./requirements-test.txt")
     session.run("pytest", "-s", "--verbose", "--log-level=INFO")
 
 
 @nox.session(reuse_venv=True)
 def check_formatting(session: nox.Session) -> None:
-    black_version = next(
-        filter(
-            lambda d: d.startswith("black"),
-            parse_requirements("./requirements-dev.txt"),
-        )
-    ).split("==")[1]
-    session.install("black==%s" % black_version)
+    session.install("-U", DEPS["black"])
     session.run("black", ".", "--check")
+
+
+@nox.session(reuse_venv=True)
+def check_types(session: nox.Session) -> None:
+    session.install("-U", DEPS["pyright"])
+    session.run("pyright")

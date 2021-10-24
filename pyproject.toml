@@ -8,3 +8,8 @@ build-backend = "setuptools.build_meta"
 [tool.black]
 extend-exclude = "len8/__init__.py"
 line-length = 79
+
+[tool.pyright]
+include = ["len8"]
+typeCheckingMode = "strict"
+reportImportCycles = false
