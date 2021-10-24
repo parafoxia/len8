@@ -27,12 +27,13 @@
 # OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 import argparse
+import typing as t
 
 
 class Parser:
     """Parser used when len8 is invoked from the command line."""
 
-    def __init__(self):
+    def __init__(self) -> None:
         self._parser = argparse.ArgumentParser(
             description=(
                 "a utility for keeping line lengths within PEP 8 standards"
@@ -41,7 +42,7 @@ class Parser:
         self._parse()
 
     @property
-    def exclude(self):
+    def exclude(self) -> t.List[str]:
         """The list of files/dirs to exclude."""
         if len(self._args.exclude) == 1:
             return self._args.exclude[0]
@@ -49,16 +50,16 @@ class Parser:
         return self._args.exclude
 
     @property
-    def extend(self):
+    def extend(self) -> bool:
         """Whether or not to increase acceptable line length to 99."""
         return self._args.length
 
     @property
-    def path(self):
+    def path(self) -> t.List[str]:
         """The list of paths to check."""
         return self._args.path
 
-    def _gather_excludes(self, e):
+    def _gather_excludes(self, e: str) -> t.List[str]:
         excludes = [".venv", "venv", ".nox"]
         excludes.extend(e.split(","))
         return excludes

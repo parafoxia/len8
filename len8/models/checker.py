@@ -27,6 +27,7 @@
 # OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 import os
+import typing as t
 
 from len8 import errors
 
@@ -47,47 +48,49 @@ class Checker:
     """
 
     def __init__(
-        self, exclude=[".nox", ".venv", "venv"], extend=False, strict=True
-    ):
-        self._bad_lines = []
+        self,
+        exclude: t.List[str] = [".nox", ".venv", "venv"],
+        extend: bool = False,
+        strict: bool = True,
+    ) -> None:
         self._exclude = exclude
         self._extend = extend
         self._strict = strict
+        self._bad_lines: t.List[
+            t.Tuple[str, int, int, t.Literal[72, 79, 99]]
+        ] = []
 
     @property
-    def bad_lines(self):
+    def bad_lines(self) -> t.Union[str, None]:
         """A formatted string containing the lines that were too long
         during the last check, or None if there were none.
         """
         if not self._bad_lines:
             return
 
-        return (
-            f"len(self._bad_lines) line(s) are too long:\n"
-            + "\n".join(
-                f"- {file}, line {line} ({chars}/{limit})"
-                for file, line, chars, limit in self._bad_lines
-            )
+        return f"len(self._bad_lines) line(s) are too long:\n" + "\n".join(
+            f"- {file}, line {line} ({chars}/{limit})"
+            for file, line, chars, limit in self._bad_lines
         )
 
     @property
-    def exclude(self):
+    def exclude(self) -> t.List[str]:
         """A list of paths to exclude from checking."""
         return self._exclude
 
     @property
-    def extend(self):
+    def extend(self) -> bool:
         """If True, increase acceptable line length to 99."""
         return self._extend
 
     @property
-    def strict(self):
+    def strict(self) -> bool:
         """If True, raises an error if the check method fails for any
         reason.
         """
         return self._strict
 
-    def check(self, *path):
+    def check(self, *path: str) -> t.Optional[str]:
         """Checks to ensure line lengths conform to PEP 8 standards.
 
         Args:
@@ -118,7 +121,7 @@ class Checker:
 
         return self.bad_lines
 
-    def _check(self, subdir, file):
+    def _check(self, subdir: str, file: str) -> None:
         io = open(f"{subdir}/{file}")
         in_docs = False
         in_license = True
@@ -145,12 +148,7 @@ class Checker:
 
             if chars > limit:
                 self._bad_lines.append(
-                    (
-                        f"{os.path.abspath(subdir)}/{file}",
-                        i + 1,
-                        chars,
-                        limit,
-                    )
+                    (f"{os.path.abspath(subdir)}/{file}", i + 1, chars, limit)
                 )
 
             if rs.endswith('"""'):
@@ -158,20 +156,20 @@ class Checker:
 
         io.close()
 
-    def _check_dir(self, path):
+    def _check_dir(self, path: str) -> None:
         for subdir, _, files in os.walk(path):
             for file in filter(
                 lambda f: self._filter(os.path.abspath(subdir), f), files
             ):
                 self._check(subdir, file)
 
-    def _check_file(self, path):
+    def _check_file(self, path: str) -> None:
         subdir, file = self._split_path(path)
 
         if self._filter(subdir, file):
             self._check(subdir, file)
 
-    def _filter(self, subdir, file):
+    def _filter(self, subdir: str, file: str) -> bool:
         if not file.endswith((".py", ".pyw")):
             return False
 
@@ -186,5 +184,5 @@ class Checker:
 
         return True
 
-    def _split_path(self, path):
+    def _split_path(self, path: str) -> t.Tuple[str, str]:
         return os.path.split(os.path.abspath(path))
