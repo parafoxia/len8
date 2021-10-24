@@ -37,7 +37,7 @@ def main():
     checker = Checker(exclude=parser.exclude, extend=parser.extend)
 
     try:
-        checker.check(*parser.path)
+        checker.check(*parser.paths)
 
     except (BadLines, InvalidPath) as e:
         print(e)

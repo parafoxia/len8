@@ -26,13 +26,11 @@
 # OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 # OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-import typing as t
-
-__all__: t.List[str] = ["BadLines", "InvalidPath", "Len8Error"]
+__all__ = ["BadLines", "InvalidPath", "Len8Error"]
 
 
 class Len8Error(Exception):
-    """Base exception all Len8 errors inherit from."""
+    """Base exception all len8 errors inherit from."""
 
 
 class BadLines(Len8Error):
@@ -46,4 +44,4 @@ class InvalidPath(Len8Error):
         self.arg = arg
 
     def __str__(self) -> str:
-        return f"InvalidPath: '{self.arg}' is not a valid path."
+        return f"Error: '{self.arg}' is not a valid path."
