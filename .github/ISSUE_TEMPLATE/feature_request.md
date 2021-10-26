@@ -1,7 +1,7 @@
 ---
-name: Bug report
-about: Report a bug
-title: Bug report
+name: Feature Request
+about: Request a feature
+title: Feature Request
 labels: pending investigation
 assignees: parafoxia, Jonxslays
 
