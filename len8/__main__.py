@@ -34,7 +34,11 @@ from len8.models import Checker, Parser
 
 def main():
     parser = Parser()
-    checker = Checker(exclude=parser.exclude, extend=parser.extend)
+    checker = Checker(
+        exclude=parser.exclude,
+        extend=parser.extend,
+        strict=True,
+    )
 
     try:
         checker.check(*parser.paths)

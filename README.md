@@ -45,6 +45,8 @@ You may need to prefix these commands with a call to the Python interpreter depe
 
 To get started checking your python projects with len8:
 
+#### Using the terminal
+
 ```sh
 # Check all files in the cwd
 len8 .
@@ -69,6 +71,28 @@ len8 ./dir/important.py
 
 # Check using multiple flags at once
 len8 -lx ignoreme.py ./project_dir
+```
+
+#### In a Python script
+
+```py
+from len8 import Checker
+
+
+# Instantiate a new Checker, with strict mode set to True
+checker = Checker(strict=True)
+
+# Set attributes after instantiation
+checker.extend = True
+checker.exclude = ["excluded_dir"]
+checker.strict = False
+
+# Checks everything in the cwd
+bad_lines = checker.check(".")
+
+# Because strict mode is set to False and no error is raised, we
+# print the returned value from the check method
+print(bad_lines)
 ```
 
 ## Contributing
