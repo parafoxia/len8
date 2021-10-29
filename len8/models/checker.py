@@ -49,9 +49,9 @@ class Checker:
 
     def __init__(
         self,
-        exclude: t.List[str] = [".nox", ".venv", "venv"],
+        exclude: t.List[str] = [],
         extend: bool = False,
-        strict: bool = True,
+        strict: bool = False,
     ) -> None:
         self._exclude = exclude
         self._extend = extend
@@ -76,12 +76,20 @@ class Checker:
     @property
     def exclude(self) -> t.List[str]:
         """A list of paths to exclude from checking."""
-        return self._exclude
+        return [".nox", ".venv", "venv", *self._exclude]
+
+    @exclude.setter
+    def exclude(self, excludes: t.List[str]) -> None:
+        self._exclude = excludes
 
     @property
     def extend(self) -> bool:
         """If True, increase acceptable line length to 99."""
         return self._extend
+
+    @extend.setter
+    def extend(self, extend: bool) -> None:
+        self._extend = extend
 
     @property
     def strict(self) -> bool:
@@ -89,6 +97,10 @@ class Checker:
         reason.
         """
         return self._strict
+
+    @strict.setter
+    def strict(self, strict: bool) -> None:
+        self._strict = strict
 
     def check(self, *paths: str) -> t.Optional[str]:
         """Checks to ensure line lengths conform to PEP 8 standards.

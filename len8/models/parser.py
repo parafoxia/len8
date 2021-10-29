@@ -44,10 +44,7 @@ class Parser:
     @property
     def exclude(self) -> t.List[str]:
         """The list of files/dirs to exclude."""
-        if len(self._args.exclude) == 1:
-            return self._args.exclude[0]
-
-        return self._args.exclude
+        return self._args.exclude[0] if self._args.exclude else []
 
     @property
     def extend(self) -> bool:
@@ -60,9 +57,7 @@ class Parser:
         return self._args.paths
 
     def _gather_excludes(self, e: str) -> t.List[str]:
-        excludes = [".venv", "venv", ".nox"]
-        excludes.extend(e.split(","))
-        return excludes
+        return e.split(",")
 
     def _parse(self):
         self._parser.add_argument("paths", nargs="+")
@@ -72,7 +67,6 @@ class Parser:
             metavar="filepath",
             type=self._gather_excludes,
             nargs=1,
-            default=[".venv", "venv", ".nox"],
             help="comma separated list of files/dirs to exclude",
         )
         self._parser.add_argument(
