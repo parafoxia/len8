@@ -1,0 +1,3 @@
+git+https://github.com/parafoxia/len8
+furo~=2021.9.8
+sphinx~=4.2.0
