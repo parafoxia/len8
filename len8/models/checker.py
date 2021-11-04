@@ -26,8 +26,8 @@
 # OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 # OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-import os
 import typing as t
+from pathlib import Path
 
 from len8 import errors
 
@@ -49,11 +49,17 @@ class Checker:
 
     def __init__(
         self,
-        exclude: t.List[str] = [],
+        exclude: t.Sequence[t.Union[Path, str]] = [],
         extend: bool = False,
         strict: bool = False,
     ) -> None:
-        self._exclude = exclude
+        def _ensure_path(value: t.Union[Path, str]) -> Path:
+            if isinstance(value, Path):
+                return value
+
+            return Path(value)
+
+        self._exclude = [_ensure_path(p) for p in exclude]
         self._extend = extend
         self._strict = strict
         self._bad_lines: t.List[
@@ -66,7 +72,7 @@ class Checker:
         during the last check, or None if there were none.
         """
         if not self._bad_lines:
-            return
+            return None
 
         return f"{len(self._bad_lines)} line(s) are too long:\n" + "\n".join(
             f"- {file}, line {line} ({chars}/{limit})"
@@ -74,12 +80,12 @@ class Checker:
         )
 
     @property
-    def exclude(self) -> t.List[str]:
+    def exclude(self) -> t.List[Path]:
         """A list of paths to exclude from checking."""
-        return [".nox", ".venv", "venv", *self._exclude]
+        return [Path(".nox"), Path(".venv"), Path("venv"), *self._exclude]
 
     @exclude.setter
-    def exclude(self, excludes: t.List[str]) -> None:
+    def exclude(self, excludes: t.List[Path]) -> None:
         self._exclude = excludes
 
     @property
@@ -102,31 +108,66 @@ class Checker:
     def strict(self, strict: bool) -> None:
         self._strict = strict
 
-    def check(self, *paths: str) -> t.Optional[str]:
-        """Checks to ensure line lengths conform to PEP 8 standards.
+    def _is_valid(self, path: Path) -> bool:
+        if path.suffix not in (".py", ".pyw"):
+            return False
 
-        Args:
-            *paths: str
-                The path or paths to check.
+        for e in self.exclude:
+            if path.is_relative_to(e):
+                return False
 
-        Raises:
-            len8.InvalidPath:
-                If strict mode is set to True and the given path does
-                not exist.
-            len8.BadLines:
-                If strict mode is set to True and the files that were
-                checked contained lines that were too long.
+        return True
 
-        Returns:
-            str | None:
-                A formatted string containing the lines that were too
-                long, or None if there were none.
-        """
+    def _check_file(self, path: Path) -> None:
+        if self._is_valid(path):
+            self._check(path)
+
+    def _check_dir(self, path: Path) -> None:
+        for p in path.rglob("*.*"):
+            self._check_file(p)
+
+    def _check(self, path: Path) -> None:
+        in_docs = False
+        in_license = True
+
+        with open(path) as f:
+            for i, line in enumerate(f):
+                ls = line.lstrip()
+                rs = line.rstrip()
+
+                if in_license:
+                    if ls.startswith("#"):
+                        continue
+
+                    in_license = False
+
+                if ls.startswith(('"""', 'r"""')):
+                    in_docs = True
+
+                chars = len(rs)
+                limit: t.Literal[72, 79, 99] = (
+                    72
+                    if in_docs or ls.startswith("#")
+                    else (99 if self.extend else 79)
+                )
+
+                if chars > limit:
+                    self._bad_lines.append(
+                        (f"{path.resolve()}", i + 1, chars, limit)
+                    )
+
+                if rs.endswith('"""'):
+                    in_docs = False
+
+    def check(self, *paths: t.Union[Path, str]) -> t.Optional[str]:
         for p in paths:
-            if not os.path.exists(p) and self.strict:
+            if not isinstance(p, Path):
+                p = Path(p)
+
+            if not p.exists() and self.strict:
                 raise errors.InvalidPath(p)
 
-            if os.path.isfile(p):
+            if p.is_file():
                 self._check_file(p)
             else:
                 self._check_dir(p)
@@ -135,72 +176,3 @@ class Checker:
             raise errors.BadLines(self.bad_lines)
 
         return self.bad_lines
-
-    def _check(self, subdir: str, file: str) -> None:
-        io = open(f"{subdir}/{file}")
-        in_docs = False
-        in_license = True
-
-        for i, line in enumerate(io):
-            ls = line.lstrip()
-            rs = line.rstrip()
-
-            if in_license:
-                if ls.startswith("#"):
-                    continue
-
-                in_license = False
-
-            if ls.startswith(('"""', 'r"""')):
-                in_docs = True
-
-            chars = len(rs)
-            limit = (
-                72
-                if in_docs or ls.startswith("#")
-                else (99 if self.extend else 79)
-            )
-
-            if chars > limit:
-                self._bad_lines.append(
-                    (f"{os.path.abspath(subdir)}/{file}", i + 1, chars, limit)
-                )
-
-            if rs.endswith('"""'):
-                in_docs = False
-
-        io.close()
-
-    def _check_dir(self, path: str) -> None:
-        for subdir, _, files in os.walk(path):
-            for file in filter(
-                lambda f: self._filter(os.path.abspath(subdir), f, path), files
-            ):
-                self._check(subdir, file)
-
-    def _check_file(self, path: str) -> None:
-        subdir, file = self._split_path(path)
-
-        if self._filter(subdir, file, path):
-            self._check(subdir, file)
-
-    def _filter(self, subdir: str, file: str, path: str) -> bool:
-        if not file.endswith((".py", ".pyw")):
-            return False
-
-        for e in self.exclude:
-            e_subdir, e_file = self._split_path(e)
-
-            if f"{e_subdir}/{e_file}" in subdir:
-                return False
-
-            if f"{path}/{e_file}" in subdir:
-                return False
-
-            if (subdir, file) == (e_subdir, e_file):
-                return False
-
-        return True
-
-    def _split_path(self, path: str) -> t.Tuple[str, str]:
-        return os.path.split(os.path.abspath(path))

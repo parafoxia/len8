@@ -32,7 +32,7 @@ from len8.errors import BadLines, InvalidPath
 from len8.models import Checker, Parser
 
 
-def main():
+def main() -> None:
     parser = Parser()
     checker = Checker(
         exclude=parser.exclude,

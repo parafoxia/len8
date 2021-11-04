@@ -28,6 +28,7 @@
 
 import argparse
 import typing as t
+from pathlib import Path
 
 
 class Parser:
@@ -42,32 +43,38 @@ class Parser:
         self._parse()
 
     @property
-    def exclude(self) -> t.List[str]:
+    def exclude(self) -> t.List[Path]:
         """The list of files/dirs to exclude."""
-        return self._args.exclude[0] if self._args.exclude else []
+        return t.cast(t.List[Path], self._args.exclude)
 
     @property
     def extend(self) -> bool:
         """Whether or not to increase acceptable line length to 99."""
-        return self._args.length
+        return t.cast(bool, self._args.length)
 
     @property
     def paths(self) -> t.List[str]:
         """The list of paths to check."""
-        return self._args.paths
+        return t.cast(t.List[str], self._args.paths)
 
-    def _gather_excludes(self, e: str) -> t.List[str]:
-        return e.split(",")
+    def _as_path_per(self, value: str) -> Path:
+        return Path(value)
 
-    def _parse(self):
-        self._parser.add_argument("paths", nargs="+")
+    def _as_paths(self, value: str) -> t.List[Path]:
+        if not value:
+            return []
+
+        return [Path(p) for p in value.split(",")]
+
+    def _parse(self) -> None:
+        self._parser.add_argument("paths", type=self._as_path_per, nargs="+")
         self._parser.add_argument(
             "-x",
             "--exclude",
-            metavar="filepath",
-            type=self._gather_excludes,
-            nargs=1,
             help="comma separated list of files/dirs to exclude",
+            metavar="filepath",
+            default="",
+            type=self._as_paths,
         )
         self._parser.add_argument(
             "-l",

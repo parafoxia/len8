@@ -26,6 +26,8 @@
 # OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 # OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
+from pathlib import Path
+
 import pytest  # type: ignore
 
 import len8
@@ -43,7 +45,11 @@ def custom_checker() -> len8.Checker:
 
 def test_default_init(default_checker: len8.Checker) -> None:
     assert isinstance(default_checker, len8.Checker)
-    assert default_checker.exclude == [".nox", ".venv", "venv"]
+    assert default_checker.exclude == [
+        Path(".nox"),
+        Path(".venv"),
+        Path("venv"),
+    ]
     assert default_checker.extend is False
     assert default_checker.bad_lines is None
     assert default_checker.strict is False
@@ -51,7 +57,12 @@ def test_default_init(default_checker: len8.Checker) -> None:
 
 def test_custom_init(custom_checker: len8.Checker) -> None:
     assert isinstance(custom_checker, len8.Checker)
-    assert custom_checker.exclude == [".nox", ".venv", "venv", "custom"]
+    assert custom_checker.exclude == [
+        Path(".nox"),
+        Path(".venv"),
+        Path("venv"),
+        Path("custom"),
+    ]
     assert custom_checker.extend is True
     assert custom_checker.bad_lines is None
     assert custom_checker.strict is True

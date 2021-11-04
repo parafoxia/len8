@@ -28,6 +28,8 @@
 
 __all__ = ["BadLines", "InvalidPath", "Len8Error"]
 
+from pathlib import Path
+
 
 class Len8Error(Exception):
     """Base exception all len8 errors inherit from."""
@@ -40,7 +42,7 @@ class BadLines(Len8Error):
 class InvalidPath(Len8Error):
     """Raised when an invalid path is passed to be checked."""
 
-    def __init__(self, arg: str) -> None:
+    def __init__(self, arg: Path) -> None:
         self.arg = arg
 
     def __str__(self) -> str:
