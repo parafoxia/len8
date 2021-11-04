@@ -55,7 +55,8 @@ with open("./len8/__init__.py") as f:
         author,
         license_,
         bug_tracker,
-    ) = [l.split('"')[1] for l in f.readlines()[28:36]]
+        ci,
+    ) = [l.split('"')[1] for l in f.readlines()[30:39]]
 
 with open("./README.md") as f:
     long_description = f.read()
@@ -81,6 +82,7 @@ setuptools.setup(
         "Natural Language :: English",
         "Operating System :: MacOS",
         "Operating System :: Microsoft :: Windows",
+        "Operating System :: OS Independent",
         "Operating System :: POSIX",
         "Operating System :: Unix",
         "Programming Language :: Python :: 3",
@@ -90,6 +92,7 @@ setuptools.setup(
         "Programming Language :: Python :: 3.8",
         "Programming Language :: Python :: 3.9",
         "Programming Language :: Python :: 3.10",
+        # "Programming Language :: Python :: 3.11",
         "Programming Language :: Python :: Implementation :: CPython",
         "Topic :: Utilities",
         "Typing :: Typed",
@@ -98,6 +101,7 @@ setuptools.setup(
         "Documentation": docs,
         "Source": url,
         "Bug Tracker": bug_tracker,
+        "CI": ci,
     },
     entry_points={"console_scripts": ["len8 = len8.__main__:main"]},
     python_requires=">=3.6.0,<3.12",
