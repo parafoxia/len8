@@ -110,7 +110,8 @@ def check_imports(session: nox.Session) -> None:
 
 @nox.session(reuse_venv=True)
 def check_typing(session: nox.Session) -> None:
-    session.install("-U", DEPS["pyright"])
+    session.install("-U", DEPS["mypy"], DEPS["pyright"])
+    session.run("mypy", "len8", "--strict")
     session.run("pyright")
 
 
