@@ -69,9 +69,6 @@ class Parser:
         """
         return t.cast(t.List[str], self._args.paths)
 
-    def _as_path_per(self, value: str) -> Path:
-        return Path(value)
-
     def _as_paths(self, value: str) -> t.List[Path]:
         if not value:
             return []
@@ -79,7 +76,7 @@ class Parser:
         return [Path(p) for p in value.split(",")]
 
     def _parse(self) -> None:
-        self._parser.add_argument("paths", type=self._as_path_per, nargs="+")
+        self._parser.add_argument("paths", type=Path, nargs="+")
         self._parser.add_argument(
             "-x",
             "--exclude",
