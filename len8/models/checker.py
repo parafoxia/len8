@@ -35,16 +35,16 @@ from len8 import errors
 class Checker:
     """An object used to check line lengths.
 
-    Args:
-        exclude: list[str]
-            A list of paths to exclude from checking. Defaults to
-            [".nox", ".venv", "venv"].
+    Keyword Args:
+        exclude: list[pathlib.Path | str]
+            A list of paths on top of the defaults (.nox, .venv, and
+            venv) to exclude from checking. Defaults to an empty list.
         extend: bool
             Whether or not to increase acceptable line length to 99.
-            Defaults to False.
+            Defaults to ``False``.
         strict: bool
             If True, raises an error if the check method fails. Defaults
-            to True.
+            to ``True``.
     """
 
     def __init__(
@@ -69,7 +69,10 @@ class Checker:
     @property
     def bad_lines(self) -> t.Union[str, None]:
         """A formatted string containing the lines that were too long
-        during the last check, or None if there were none.
+        during the last check, or ``None`` if there were none.
+
+        Returns:
+            ``str`` | ``None``
         """
         if not self._bad_lines:
             return None
@@ -81,7 +84,11 @@ class Checker:
 
     @property
     def exclude(self) -> t.List[Path]:
-        """A list of paths to exclude from checking."""
+        """A list of paths to exclude from checking.
+
+        Returns:
+            ``list[pathlib.Path]``
+        """
         return [Path(".nox"), Path(".venv"), Path("venv"), *self._exclude]
 
     @exclude.setter
@@ -90,7 +97,11 @@ class Checker:
 
     @property
     def extend(self) -> bool:
-        """If True, increase acceptable line length to 99."""
+        """If ``True``, increase acceptable line length to 99.
+
+        Returns:
+            ``bool``
+        """
         return self._extend
 
     @extend.setter
@@ -99,8 +110,11 @@ class Checker:
 
     @property
     def strict(self) -> bool:
-        """If True, raises an error if the check method fails for any
-        reason.
+        """If ``True``, raises an error if the check method fails for
+        any reason.
+
+        Returns:
+            ``bool``
         """
         return self._strict
 
@@ -160,6 +174,25 @@ class Checker:
                     in_docs = False
 
     def check(self, *paths: t.Union[Path, str]) -> t.Optional[str]:
+        """Checks to ensure the line lengths conform to PEP 8 standards.
+
+        Args:
+            *paths: ``Path`` | ``str``
+                The path or paths to check.
+
+        Returns:
+            ``str`` | ``None``
+                A formatted string containing the lines that were too
+                long, or ``None`` if there were none.
+
+        Raises:
+            :obj:`InvalidPath`:
+                If strict mode is set to ``True`` and the given path
+                does not exist.
+            :obj:`BadLines`:
+                If strict mode is set to ``True`` and the files that
+                were checked contained lines what were too long.
+        """
         for p in paths:
             if not isinstance(p, Path):
                 p = Path(p)

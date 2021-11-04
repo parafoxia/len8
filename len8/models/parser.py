@@ -44,17 +44,29 @@ class Parser:
 
     @property
     def exclude(self) -> t.List[Path]:
-        """The list of files/dirs to exclude."""
+        """The list of files/dirs to exclude.
+
+        Returns:
+            ``list[pathlib.Path]``
+        """
         return t.cast(t.List[Path], self._args.exclude)
 
     @property
     def extend(self) -> bool:
-        """Whether or not to increase acceptable line length to 99."""
+        """Whether or not to increase acceptable line length to 99.
+
+        Returns:
+            ``bool``
+        """
         return t.cast(bool, self._args.length)
 
     @property
     def paths(self) -> t.List[str]:
-        """The list of paths to check."""
+        """The list of paths to check.
+
+        Returns:
+            ``list[str]``
+        """
         return t.cast(t.List[str], self._args.paths)
 
     def _as_path_per(self, value: str) -> Path:
