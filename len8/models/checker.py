@@ -49,6 +49,7 @@ class Checker:
 
     def __init__(
         self,
+        *,
         exclude: t.Sequence[t.Union[Path, str]] = [],
         extend: bool = False,
         strict: bool = False,
@@ -127,6 +128,9 @@ class Checker:
             return False
 
         for e in self.exclude:
+            if path.absolute() == e:
+                return False
+
             if path.is_relative_to(e):
                 return False
 
