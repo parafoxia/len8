@@ -36,7 +36,7 @@ pip install len8
 
 You can also install the latest development version using the following command:
 ```sh
-pip install git+https://github.com/parafoxia/len8@develop
+pip install git+https://github.com/parafoxia/len8
 ```
 
 You may need to prefix these commands with a call to the Python interpreter depending on your OS and Python configuration.
