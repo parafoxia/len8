@@ -34,6 +34,7 @@ import len8
 from len8.errors import BadLines, InvalidPath
 
 TEST_FILE = Path(__file__).parent / "testdata.py"
+TEST_NON_VALID = TEST_FILE.parent / "nsx_simple_app.nsx"
 
 
 @pytest.fixture()
@@ -121,7 +122,7 @@ def test_update_excludes(default_checker: len8.Checker) -> None:
 
 def test_file_validation(default_checker: len8.Checker) -> None:
     assert default_checker._is_valid(TEST_FILE)
-    assert not default_checker._is_valid(Path("test.rs"))
+    assert not default_checker._is_valid(Path("README.md"))
 
     default_checker.exclude = [Path(__file__).parent]
     assert default_checker._is_valid(Path("len8").absolute())
@@ -145,3 +146,10 @@ def test_pathlib_conversion_on_check(default_checker: len8.Checker) -> None:
     with pytest.raises(InvalidPath) as exc:
         assert default_checker.check(f"invalid_dir") == output
     assert f"{exc.value}" == f"Error: 'invalid_dir' is not a valid path."
+
+
+def test_skip_invalid_files(default_checker: len8.Checker) -> None:
+    try:
+        default_checker.check(TEST_NON_VALID)
+    except UnicodeDecodeError:
+        pytest.fail()

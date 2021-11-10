@@ -124,7 +124,7 @@ class Checker:
         self._strict = strict
 
     def _is_valid(self, path: Path) -> bool:
-        if path.suffix and path.suffix not in (".py", ".pyw"):
+        if path.is_file() and path.suffix not in (".py", ".pyw"):
             return False
 
         for e in self.exclude:
@@ -148,34 +148,38 @@ class Checker:
         in_docs = False
         in_license = True
 
-        with open(path) as f:
-            for i, line in enumerate(f):
-                ls = line.lstrip()
-                rs = line.rstrip()
+        try:
+            with open(path, encoding="utf-8") as f:
+                for i, line in enumerate(f):
+                    ls = line.lstrip()
+                    rs = line.rstrip()
 
-                if in_license:
-                    if ls.startswith("#"):
-                        continue
+                    if in_license:
+                        if ls.startswith("#"):
+                            continue
 
-                    in_license = False
+                        in_license = False
 
-                if ls.startswith(('"""', 'r"""')):
-                    in_docs = True
+                    if ls.startswith(('"""', 'r"""')):
+                        in_docs = True
 
-                chars = len(rs)
-                limit: t.Literal[72, 79, 99] = (
-                    72
-                    if in_docs or ls.startswith("#")
-                    else (99 if self.extend else 79)
-                )
-
-                if chars > limit:
-                    self._bad_lines.append(
-                        (f"{path.resolve()}", i + 1, chars, limit)
+                    chars = len(rs)
+                    limit: t.Literal[72, 79, 99] = (
+                        72
+                        if in_docs or ls.startswith("#")
+                        else (99 if self.extend else 79)
                     )
 
-                if rs.endswith('"""'):
-                    in_docs = False
+                    if chars > limit:
+                        self._bad_lines.append(
+                            (f"{path.resolve()}", i + 1, chars, limit)
+                        )
+
+                    if rs.endswith('"""'):
+                        in_docs = False
+        except IsADirectoryError:
+            # Handle weird directories.
+            ...
 
     def check(self, *paths: t.Union[Path, str]) -> t.Optional[str]:
         """Checks to ensure the line lengths conform to PEP 8 standards.
