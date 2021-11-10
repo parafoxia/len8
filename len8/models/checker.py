@@ -131,7 +131,7 @@ class Checker:
             if path.absolute() == e:
                 return False
 
-            if path.is_relative_to(e):
+            if all(x in path.parts for x in e.parts):
                 return False
 
         return True
