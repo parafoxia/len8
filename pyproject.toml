@@ -6,7 +6,7 @@ requires = [
 build-backend = "setuptools.build_meta"
 
 [tool.black]
-extend-exclude = "len8/__init__.py"
+extend-exclude = "len8/__init__.py|tests/testdata.py"
 line-length = 79
 
 [tool.pyright]

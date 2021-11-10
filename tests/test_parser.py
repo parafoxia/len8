@@ -26,17 +26,42 @@
 # OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 # OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-__all__ = ["BadLines", "Checker" ,"InvalidPath", "Len8Error"]
+import subprocess as sp
+import sys
+from pathlib import Path
 
-__productname__ = "len8"
-__version__ = "0.4.1a0"
-__description__ = "A utility for keeping line lengths within PEP 8 standards."
-__url__ = "https://github.com/parafoxia/len8"
-__docs__ = "https://len8.readthedocs.io/en/latest/"
-__author__ = "Ethan Henderson, Jonxslays"
-__license__ = "BSD-3-Clause"
-__bugtracker__ = "https://github.com/parafoxia/len8/issues"
-__ci__ = "https://github.com/parafoxia/len8/actions"
+from len8.models.parser import Parser
 
-from .errors import *
-from .models import Checker
+
+def run(command: str):
+    if sys.version_info >= (3, 7, 0):
+        return sp.run(command, shell=True, capture_output=True)
+
+    if os.name != "nt":
+        return sp.run(f"{command} > /dev/null 2>&1", shell=True)
+
+    # Windows users will have to put up with the output for 3.6 tests.
+    return sp.run(command, shell=True)
+
+
+def test_basic_parsing() -> None:
+    sys.argv = ["len8", "."]
+    parser = Parser()
+    assert parser.paths == [Path(".")]
+    assert parser.exclude == []
+    assert parser.extend == False
+
+
+def test_option_parsing() -> None:
+    sys.argv = [
+        "len8",
+        "len8",
+        "tests/testdata.py",
+        "-l",
+        "-x",
+        "noxfile.py,setup.py",
+    ]
+    parser = Parser()
+    assert parser.paths == [Path("len8"), Path("tests/testdata.py")]
+    assert parser.exclude == [Path("noxfile.py"), Path("setup.py")]
+    assert parser.extend == True

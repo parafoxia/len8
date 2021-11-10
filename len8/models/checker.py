@@ -124,7 +124,7 @@ class Checker:
         self._strict = strict
 
     def _is_valid(self, path: Path) -> bool:
-        if path.suffix not in (".py", ".pyw"):
+        if path.suffix and path.suffix not in (".py", ".pyw"):
             return False
 
         for e in self.exclude:
@@ -197,6 +197,8 @@ class Checker:
                 If strict mode is set to ``True`` and the files that
                 were checked contained lines what were too long.
         """
+        self._bad_lines = []
+
         for p in paths:
             if not isinstance(p, Path):
                 p = Path(p)

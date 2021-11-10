@@ -31,6 +31,9 @@ from pathlib import Path
 import pytest  # type: ignore
 
 import len8
+from len8.errors import BadLines, InvalidPath
+
+TEST_FILE = Path(__file__).parent / "testdata.py"
 
 
 @pytest.fixture()
@@ -40,7 +43,9 @@ def default_checker() -> len8.Checker:
 
 @pytest.fixture()
 def custom_checker() -> len8.Checker:
-    return len8.Checker(exclude=["custom"], extend=True, strict=True)
+    return len8.Checker(
+        exclude=["custom", Path("another")], extend=True, strict=True
+    )
 
 
 def test_default_init(default_checker: len8.Checker) -> None:
@@ -62,7 +67,81 @@ def test_custom_init(custom_checker: len8.Checker) -> None:
         Path(".venv"),
         Path("venv"),
         Path("custom"),
+        Path("another"),
     ]
     assert custom_checker.extend is True
     assert custom_checker.bad_lines is None
     assert custom_checker.strict is True
+
+
+def test_non_strict_output(default_checker: len8.Checker) -> None:
+    output = (
+        "3 line(s) are too long:\n"
+        f"- {TEST_FILE}, line 4 (76/72)\n"
+        f"- {TEST_FILE}, line 5 (83/79)\n"
+        f"- {TEST_FILE}, line 11 (78/72)"
+    )
+    assert default_checker.check(TEST_FILE) == output
+
+
+def test_non_strict_output_extended(default_checker: len8.Checker) -> None:
+    default_checker.extend = True
+    output = (
+        "2 line(s) are too long:\n"
+        f"- {TEST_FILE}, line 4 (76/72)\n"
+        f"- {TEST_FILE}, line 11 (78/72)"
+    )
+    assert default_checker.check(TEST_FILE) == output
+    assert default_checker.check(TEST_FILE.parent) == output
+
+
+def test_strict_output(default_checker: len8.Checker) -> None:
+    default_checker.strict = True
+    output = (
+        "3 line(s) are too long:\n"
+        f"- {TEST_FILE}, line 4 (76/72)\n"
+        f"- {TEST_FILE}, line 5 (83/79)\n"
+        f"- {TEST_FILE}, line 11 (78/72)"
+    )
+    with pytest.raises(BadLines) as exc:
+        assert default_checker.check(TEST_FILE) == output
+    assert f"{exc.value}" == output
+
+
+def test_update_excludes(default_checker: len8.Checker) -> None:
+    default_checker.exclude = [Path("custom"), Path("another")]
+    assert default_checker.exclude == [
+        Path(".nox"),
+        Path(".venv"),
+        Path("venv"),
+        Path("custom"),
+        Path("another"),
+    ]
+
+
+def test_file_validation(default_checker: len8.Checker) -> None:
+    assert default_checker._is_valid(TEST_FILE)
+    assert not default_checker._is_valid(Path("test.rs"))
+
+    default_checker.exclude = [Path(__file__).parent]
+    assert default_checker._is_valid(Path("len8").absolute())
+    assert not default_checker._is_valid(Path("tests").absolute())
+
+    default_checker.exclude = [Path("testdata.py")]
+    assert default_checker._is_valid(Path("checker.py"))
+    assert not default_checker._is_valid(Path("testdata.py"))
+
+
+def test_pathlib_conversion_on_check(default_checker: len8.Checker) -> None:
+    output = (
+        "3 line(s) are too long:\n"
+        f"- {TEST_FILE}, line 4 (76/72)\n"
+        f"- {TEST_FILE}, line 5 (83/79)\n"
+        f"- {TEST_FILE}, line 11 (78/72)"
+    )
+    assert default_checker.check(f"{TEST_FILE}") == output
+
+    default_checker.strict = True
+    with pytest.raises(InvalidPath) as exc:
+        assert default_checker.check(f"invalid_dir") == output
+    assert f"{exc.value}" == f"Error: 'invalid_dir' is not a valid path."
