@@ -22,7 +22,7 @@ A utility for keeping line lengths within [PEP 8](https://www.python.org/dev/pep
 - An easy-to-use CLI (command-line interface)
 - Check a single file, directory, or multiple files and directories
 - Exclude files and directories from being checked
-- Extend acceptable length to 99 chars situationally
+- Set different maximum lengths for both code and documentation
 - Minimal dependencies
 
 ## Installation
@@ -43,15 +43,15 @@ You may need to prefix these commands with a call to the Python interpreter depe
 
 ## Quickstart
 
-To get started checking your python projects with len8:
+To get started checking your Python projects with len8:
 
 #### Using the terminal
 
 ```sh
-# Check all files in the cwd
+# Check all files in the CWD
 len8 .
 
-# Check all files in `tests` directory and `stats.py` file in cwd
+# Check all files in `tests` directory and `stats.py` file in CWD
 len8 tests stats.py
 
 # Check all files in two particular directories
@@ -61,9 +61,15 @@ len8 my_package tests
 # By default '.venv', 'venv', and '.nox' are excluded
 len8 -x config.py,secrets .
 
-# Check 'project' dir and increase line length to 99
-len8 -l project
-len8 -l /home/project
+# Check 'project' dir and increase maximum allowed line lengths
+# Note that line lengths for comments and docs stay at 72
+len8 -l project         # Increase to 88 (black's default)
+len8 -ll /home/project  # Increate to 99 (max allowed by PEP 8)
+
+# Check using custom line lengths
+len8 -c 150 .
+len8 -d 100 .
+len8 -ll -d 99 .
 
 # Check only one file 'important.py'
 len8 important.py
@@ -78,14 +84,16 @@ len8 -lx ignoreme.py ./project_dir
 ```py
 from len8 import Checker
 
-
 # Instantiate a new Checker, with strict mode set to True
 checker = Checker(strict=True)
 
 # Set attributes after instantiation
-checker.extend = True
+checker.extend = 2
 checker.exclude = ["excluded_dir"]
 checker.strict = False
+
+# Set line lengths after instantiation
+checker.set_line_lengths(code=100, docs=80)
 
 # Checks everything in the cwd
 bad_lines = checker.check(".")
