@@ -45,7 +45,7 @@ def default_checker() -> len8.Checker:
 @pytest.fixture()
 def custom_checker() -> len8.Checker:
     return len8.Checker(
-        exclude=["custom", Path("another")], extend=True, strict=True
+        exclude=["custom", Path("another")], extend=2, strict=True
     )
 
 
@@ -56,7 +56,7 @@ def test_default_init(default_checker: len8.Checker) -> None:
         Path(".venv"),
         Path("venv"),
     ]
-    assert default_checker.extend is False
+    assert default_checker.extend == 0
     assert default_checker.bad_lines is None
     assert default_checker.strict is False
 
@@ -70,7 +70,7 @@ def test_custom_init(custom_checker: len8.Checker) -> None:
         Path("custom"),
         Path("another"),
     ]
-    assert custom_checker.extend is True
+    assert custom_checker.extend == 2
     assert custom_checker.bad_lines is None
     assert custom_checker.strict is True
 

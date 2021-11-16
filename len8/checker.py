@@ -69,7 +69,7 @@ class Checker:
 
             return Path(value)
 
-        if 0 <= extend <= 2:
+        if not 0 <= extend <= 2:
             raise ValueError("'extend' should be between 0 and 2 inclusive")
 
         if max_code_length and max_code_length < 0:
