@@ -103,7 +103,8 @@ setuptools.setup(
         "Bug Tracker": bug_tracker,
         "CI": ci,
     },
-    entry_points={"console_scripts": ["len8 = len8.__main__:main"]},
+    install_requires=parse_requirements("./requirements.txt"),
+    entry_points={"console_scripts": ["len8 = len8.cli:len8"]},
     python_requires=">=3.6.0,<3.12",
-    packages=setuptools.find_packages(include=["len8*"]),
+    packages=setuptools.find_packages(),
 )

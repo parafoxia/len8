@@ -23,7 +23,7 @@ A utility for keeping line lengths within [PEP 8](https://www.python.org/dev/pep
 - Check a single file, directory, or multiple files and directories
 - Exclude files and directories from being checked
 - Extend acceptable length to 99 chars situationally
-- No dependencies!
+- Minimal dependencies
 
 ## Installation
 

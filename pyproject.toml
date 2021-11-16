@@ -9,7 +9,9 @@ build-backend = "setuptools.build_meta"
 extend-exclude = "len8/__init__.py|tests/testdata.py"
 line-length = 79
 
-[tool.pyright]
-include = ["len8"]
-typeCheckingMode = "strict"
-reportImportCycles = false
+[tool.isort]
+profile = "black"
+
+[tool.mypy]
+strict = true
+ignore_missing_imports = true
