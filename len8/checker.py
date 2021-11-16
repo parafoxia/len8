@@ -40,7 +40,7 @@ class Checker:
             A list of paths on top of the defaults (.nox, .venv, and
             venv) to exclude from checking. Defaults to an empty list.
         extend: ``int``
-            Increase the code limit limit to set figures (pass ``1``
+            Increase the line length limit to set figures (pass ``1``
             to increase to 88, and ``2`` to increase to 99). This is
             designed to allow for an additive option in the CLI --
             consider using :obj:`max_code_length` and
@@ -134,7 +134,7 @@ class Checker:
         """The value to use as the maximum line length for code. This
         will return:
 
-        - The custom length, if :obj:`_code_length` is not ``None``.
+        - The custom length, if one was set.
         - 79 if :obj:`extend` equals 0.
         - 88 if :obj:`extend` equals 1.
         - 99 if :obj:`extend` equals 2.
@@ -149,7 +149,7 @@ class Checker:
         """The value to use as the maximum line length for comments and
         documentation. This will return:
 
-        - The custom length, if :obj:`_docs_length` is not ``None``.
+        - The custom length, if one was set.
         - 72 otherwise.
         """
         if self._docs_length:

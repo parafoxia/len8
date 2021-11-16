@@ -64,12 +64,12 @@ len8 -x config.py,secrets .
 # Check 'project' dir and increase maximum allowed line lengths
 # Note that line lengths for comments and docs stay at 72
 len8 -l project         # Increase to 88 (black's default)
-len8 -ll /home/project  # Increate to 99 (max allowed by PEP 8)
+len8 -ll /home/project  # Increase to 99 (max allowed by PEP 8)
 
 # Check using custom line lengths
-len8 -c 150 .
-len8 -d 100 .
-len8 -ll -d 99 .
+len8 -c 150 .     # Increase code to 150
+len8 -d 100 .     # Increase docs to 100
+len8 -ll -d 99 .  # Increase code and docs to 99
 
 # Check only one file 'important.py'
 len8 important.py
@@ -93,7 +93,7 @@ checker.exclude = ["excluded_dir"]
 checker.strict = False
 
 # Set line lengths after instantiation
-checker.set_line_lengths(code=100, docs=80)
+checker.set_lengths(code=100, docs=80)
 
 # Checks everything in the cwd
 bad_lines = checker.check(".")

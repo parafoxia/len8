@@ -68,7 +68,7 @@ def _as_paths(value: str) -> t.Tuple[Path, ...]:
     "--code-length",
     type=int,
     metavar="CHARS",
-    help="Custom line length for code. Overrides --length if set.",
+    help="Custom line length for code. Overrides --extend-length if set.",
 )
 @click.option(
     "-d",
