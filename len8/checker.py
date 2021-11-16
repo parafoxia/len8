@@ -73,10 +73,10 @@ class Checker:
             raise ValueError("'extend' should be between 0 and 2 inclusive")
 
         if max_code_length and max_code_length < 0:
-            raise ValueError("Line lengths cannot be less than 0.")
+            raise ValueError("line lengths cannot be less than 0")
 
         if max_docs_length and max_docs_length < 0:
-            raise ValueError("Line lengths cannot be less than 0.")
+            raise ValueError("line lengths cannot be less than 0")
 
         self._exclude = [_ensure_path(p) for p in exclude]
         self._extend = extend
@@ -231,13 +231,13 @@ class Checker:
             ...
 
     def set_lengths(
-        self, *, code: t.Optional[int] = None, docs: t.Optional[int] = None
+        self, *, code: t.Optional[int] = -1, docs: t.Optional[int] = -1
     ) -> None:
         """Set the maximum line lengths for code and documentation."""
-        if code and code > 0:
+        if not code or code > 0:
             self._code_length = code
 
-        if docs and docs > 0:
+        if not docs or docs > 0:
             self._docs_length = docs
 
     def check(self, *paths: t.Union[Path, str]) -> t.Optional[str]:

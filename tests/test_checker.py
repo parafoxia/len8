@@ -43,10 +43,15 @@ def default_checker() -> len8.Checker:
 
 
 @pytest.fixture()
-def custom_checker() -> len8.Checker:
+def extended_checker() -> len8.Checker:
     return len8.Checker(
         exclude=["custom", Path("another")], extend=2, strict=True
     )
+
+
+@pytest.fixture()
+def custom_checker() -> len8.Checker:
+    return len8.Checker(max_code_length=100, max_docs_length=80)
 
 
 def test_default_init(default_checker: len8.Checker) -> None:
@@ -59,6 +64,24 @@ def test_default_init(default_checker: len8.Checker) -> None:
     assert default_checker.extend == 0
     assert default_checker.bad_lines is None
     assert default_checker.strict is False
+    assert default_checker.code_length == 79
+    assert default_checker.docs_length == 72
+
+
+def test_extended_init(extended_checker: len8.Checker) -> None:
+    assert isinstance(extended_checker, len8.Checker)
+    assert extended_checker.exclude == [
+        Path(".nox"),
+        Path(".venv"),
+        Path("venv"),
+        Path("custom"),
+        Path("another"),
+    ]
+    assert extended_checker.extend == 2
+    assert extended_checker.bad_lines is None
+    assert extended_checker.strict is True
+    assert extended_checker.code_length == 99
+    assert extended_checker.docs_length == 72
 
 
 def test_custom_init(custom_checker: len8.Checker) -> None:
@@ -67,12 +90,44 @@ def test_custom_init(custom_checker: len8.Checker) -> None:
         Path(".nox"),
         Path(".venv"),
         Path("venv"),
-        Path("custom"),
-        Path("another"),
     ]
-    assert custom_checker.extend == 2
+    assert custom_checker.extend == 0
     assert custom_checker.bad_lines is None
-    assert custom_checker.strict is True
+    assert custom_checker.strict is False
+    assert custom_checker.code_length == 100
+    assert custom_checker.docs_length == 80
+
+
+def test_bad_inits(default_checker: len8.Checker) -> None:
+    with pytest.raises(ValueError) as exc:
+        len8.Checker(extend=5)
+    assert f"{exc.value}" == "'extend' should be between 0 and 2 inclusive"
+
+    with pytest.raises(ValueError) as exc:
+        len8.Checker(max_code_length=-1)
+    assert f"{exc.value}" == "line lengths cannot be less than 0"
+
+    with pytest.raises(ValueError) as exc:
+        len8.Checker(max_docs_length=-1)
+    assert f"{exc.value}" == "line lengths cannot be less than 0"
+
+    with pytest.raises(ValueError) as exc:
+        default_checker.extend = 5
+    assert f"{exc.value}" == "'extend' should be between 0 and 2 inclusive"
+
+
+def test_setting_lengths(default_checker: len8.Checker) -> None:
+    default_checker.set_lengths(code=100, docs=80)
+    assert default_checker.code_length == 100
+    assert default_checker.docs_length == 80
+
+    default_checker.set_lengths(docs=50)
+    assert default_checker.code_length == 100
+    assert default_checker.docs_length == 50
+
+    default_checker.set_lengths(code=None)
+    assert default_checker.code_length == 79
+    assert default_checker.docs_length == 50
 
 
 def test_non_strict_output(default_checker: len8.Checker) -> None:
