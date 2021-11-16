@@ -28,7 +28,7 @@
 
 from pathlib import Path
 
-import pytest  # type: ignore
+import pytest
 
 import len8
 from len8.errors import BadLines, InvalidPath
@@ -37,19 +37,19 @@ TEST_FILE = Path(__file__).parent / "testdata.py"
 TEST_NON_VALID = TEST_FILE.parent / "nsx_simple_app.nsx"
 
 
-@pytest.fixture()
+@pytest.fixture()  # type: ignore
 def default_checker() -> len8.Checker:
     return len8.Checker()
 
 
-@pytest.fixture()
+@pytest.fixture()  # type: ignore
 def extended_checker() -> len8.Checker:
     return len8.Checker(
         exclude=["custom", Path("another")], extend=2, strict=True
     )
 
 
-@pytest.fixture()
+@pytest.fixture()  # type: ignore
 def custom_checker() -> len8.Checker:
     return len8.Checker(max_code_length=100, max_docs_length=80)
 
