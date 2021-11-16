@@ -36,20 +36,20 @@ class Checker:
     """An object used to check line lengths.
 
     Keyword Args:
-        exclude: list[pathlib.Path | str]
+        exclude: ``list[pathlib.Path | str]``
             A list of paths on top of the defaults (.nox, .venv, and
             venv) to exclude from checking. Defaults to an empty list.
-        extend: int
+        extend: ``int``
             Increase the code limit limit to set figures (pass ``1``
             to increase to 88, and ``2`` to increase to 99). This is
             designed to allow for an additive option in the CLI --
             consider using :obj:`max_code_length` and
             :obj:`max_docs_length` instead.
-        max_code_length: int | None
+        max_code_length: ``int`` | ``None``
             Set the maximum length for code.
-        max_docs_length: int | None
+        max_docs_length: ``int`` | ``None``
             Set the maximum length for comments and documentation.
-        strict: bool
+        strict: ``bool``
             If True, raises an error if the check method fails. Defaults
             to ``True``.
     """
@@ -233,7 +233,20 @@ class Checker:
     def set_lengths(
         self, *, code: t.Optional[int] = -1, docs: t.Optional[int] = -1
     ) -> None:
-        """Set the maximum line lengths for code and documentation."""
+        """Set the maximum line lengths for code and documentation.
+
+        Keyword Args:
+            code: ``int`` | ``None``
+                The length to set as the maximum line length for code.
+                Passing ``None`` will reset the override, and passing
+                a negative integer will preserve the previous value.
+                Defaults to -1.
+            docs: ``int`` | ``None``
+                The length to set as the maximum line length for
+                comments and documentation. Passing ``None`` will reset
+                the override, and passing a negative integer will
+                preserve the previous value. Defaults to -1.
+        """
         if not code or code > 0:
             self._code_length = code
 
