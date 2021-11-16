@@ -1,19 +1,16 @@
 # len8
 
 
-[![PyPI pyversions](https://img.shields.io/pypi/pyversions/len8.svg)](https://pypi.python.org/pypi/len8/)
-
-[![PyPI - Implementation](https://img.shields.io/pypi/implementation/len8)](https://pypi.python.org/pypi/len8/)
-[![Downloads](https://pepy.tech/badge/len8)](https://pepy.tech/project/len8)
 [![PyPi version](https://img.shields.io/pypi/v/len8.svg)](https://pypi.python.org/pypi/len8/)
-
 [![PyPI - Status](https://img.shields.io/pypi/status/len8)](https://pypi.python.org/pypi/len8/)
-[![Read the Docs](https://img.shields.io/readthedocs/len8)](https://len8.readthedocs.io/en/latest/index.html)
-[![CI](https://github.com/parafoxia/len8/actions/workflows/ci.yml/badge.svg)](https://github.com/parafoxia/len8/actions/workflows/ci.yml)
-
-[![License](https://img.shields.io/github/license/parafoxia/len8.svg)](https://github.com/parafoxia/len8/blob/main/LICENSE)
+[![Downloads](https://pepy.tech/badge/len8)](https://pepy.tech/project/len8)
 [![GitHub last commit](https://img.shields.io/github/last-commit/parafoxia/len8)](https://github.com/parafoxia/len8)
-[![Maintenance](https://img.shields.io/maintenance/yes/2021)](https://github.com/parafoxia/len8)
+[![License](https://img.shields.io/github/license/parafoxia/len8.svg)](https://github.com/parafoxia/len8/blob/main/LICENSE)
+
+[![CI](https://github.com/parafoxia/len8/actions/workflows/ci.yml/badge.svg)](https://github.com/parafoxia/len8/actions/workflows/ci.yml)
+[![Read the Docs](https://img.shields.io/readthedocs/len8)](https://len8.readthedocs.io/en/latest/index.html)
+[![Maintainability](https://api.codeclimate.com/v1/badges/9ec0deb12d512a60e6af/maintainability)](https://codeclimate.com/github/parafoxia/len8/maintainability)
+[![Test Coverage](https://api.codeclimate.com/v1/badges/9ec0deb12d512a60e6af/test_coverage)](https://codeclimate.com/github/parafoxia/len8/test_coverage)
 
 A utility for keeping line lengths within [PEP 8](https://www.python.org/dev/peps/pep-0008/#maximum-line-length) standards.
 
