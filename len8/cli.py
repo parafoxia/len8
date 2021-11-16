@@ -26,7 +26,74 @@
 # OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 # OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-from len8 import cli
+import sys
+import typing as t
+from pathlib import Path
 
-if __name__ == "__main__":
-    cli.len8()
+import click
+
+from len8 import Checker
+from len8.errors import BadLines, InvalidPath
+
+
+def _as_paths(value: str) -> t.Tuple[Path, ...]:
+    if not value:
+        return ()
+
+    return tuple(Path(p) for p in value.split(","))
+
+
+@click.command()
+@click.version_option()
+@click.argument("paths", type=Path, required=True, nargs=-1)
+@click.option(
+    "-x",
+    "--exclude",
+    type=_as_paths,
+    default="",
+    metavar="FILEPATH",
+    help="Comma-separated list of files/dirs to exclude.",
+)
+@click.option(
+    "-l",
+    "--extend-length",
+    count=True,
+    help=(
+        "Increase line length for code. Option is additive, and can be used "
+        "up to 2 times (corresponding to 88 and 99; omit for 79)"
+    ),
+)
+@click.option(
+    "-c",
+    "--code-length",
+    type=int,
+    metavar="CHARS",
+    help="Custom line length for code. Overrides --length if set.",
+)
+@click.option(
+    "-d",
+    "--docs-length",
+    type=int,
+    metavar="CHARS",
+    help="Custom line length for comments and docstrings.",
+)
+def len8(
+    paths: t.Tuple[Path, ...],
+    exclude: t.Tuple[Path, ...],
+    extend_length: int,
+    code_length: t.Optional[int],
+    docs_length: t.Optional[int],
+) -> None:
+    checker = Checker(
+        exclude=exclude,
+        extend=min(extend_length, 2),
+        max_code_length=code_length,
+        max_docs_length=docs_length,
+        strict=True,
+    )
+
+    try:
+        checker.check(*paths)
+    except (BadLines, InvalidPath) as e:
+        print(e)
+        sys.exit(1)
