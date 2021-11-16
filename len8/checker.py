@@ -39,9 +39,16 @@ class Checker:
         exclude: list[pathlib.Path | str]
             A list of paths on top of the defaults (.nox, .venv, and
             venv) to exclude from checking. Defaults to an empty list.
-        extend: bool
-            Whether or not to increase acceptable line length to 99.
-            Defaults to ``False``.
+        extend: int
+            Increase the code limit limit to set figures (pass ``1``
+            to increase to 88, and ``2`` to increase to 99). This is
+            designed to allow for an additive option in the CLI --
+            consider using :obj:`max_code_length` and
+            :obj:`max_docs_length` instead.
+        max_code_length: int | None
+            Set the maximum length for code.
+        max_docs_length: int | None
+            Set the maximum length for comments and documentation.
         strict: bool
             If True, raises an error if the check method fails. Defaults
             to ``True``.
@@ -51,7 +58,9 @@ class Checker:
         self,
         *,
         exclude: t.Sequence[t.Union[Path, str]] = [],
-        extend: bool = False,
+        extend: int = 0,
+        max_code_length: t.Optional[int] = None,
+        max_docs_length: t.Optional[int] = None,
         strict: bool = False,
     ) -> None:
         def _ensure_path(value: t.Union[Path, str]) -> Path:
@@ -60,12 +69,21 @@ class Checker:
 
             return Path(value)
 
+        if 0 <= extend <= 2:
+            raise ValueError("'extend' should be between 0 and 2 inclusive")
+
+        if max_code_length and max_code_length < 0:
+            raise ValueError("Line lengths cannot be less than 0.")
+
+        if max_docs_length and max_docs_length < 0:
+            raise ValueError("Line lengths cannot be less than 0.")
+
         self._exclude = [_ensure_path(p) for p in exclude]
         self._extend = extend
+        self._code_length = max_code_length
+        self._docs_length = max_docs_length
         self._strict = strict
-        self._bad_lines: t.List[
-            t.Tuple[str, int, int, t.Literal[72, 79, 99]]
-        ] = []
+        self._bad_lines: t.List[t.Tuple[str, int, int, int]] = []
 
     @property
     def bad_lines(self) -> t.Union[str, None]:
@@ -97,17 +115,47 @@ class Checker:
         self._exclude = excludes
 
     @property
-    def extend(self) -> bool:
-        """If ``True``, increase acceptable line length to 99.
+    def extend(self) -> int:
+        """The extension factor.
 
         Returns:
-            ``bool``
+            ``int``
         """
         return self._extend
 
     @extend.setter
-    def extend(self, extend: bool) -> None:
+    def extend(self, extend: int) -> None:
+        if not 0 <= extend <= 2:
+            raise ValueError("'extend' should be between 0 and 2 inclusive")
         self._extend = extend
+
+    @property
+    def code_length(self) -> int:
+        """The value to use as the maximum line length for code. This
+        will return:
+
+        - The custom length, if :obj:`_code_length` is not ``None``.
+        - 79 if :obj:`extend` equals 0.
+        - 88 if :obj:`extend` equals 1.
+        - 99 if :obj:`extend` equals 2.
+        """
+        if self._code_length:
+            return self._code_length
+
+        return (79, 88, 99)[self._extend]
+
+    @property
+    def docs_length(self) -> int:
+        """The value to use as the maximum line length for comments and
+        documentation. This will return:
+
+        - The custom length, if :obj:`_docs_length` is not ``None``.
+        - 72 otherwise.
+        """
+        if self._docs_length:
+            return self._docs_length
+
+        return 72
 
     @property
     def strict(self) -> bool:
@@ -164,10 +212,10 @@ class Checker:
                         in_docs = True
 
                     chars = len(rs)
-                    limit: t.Literal[72, 79, 99] = (
-                        72
+                    limit: int = (
+                        self.docs_length
                         if in_docs or ls.startswith("#")
-                        else (99 if self.extend else 79)
+                        else self.code_length
                     )
 
                     if chars > limit:
@@ -177,12 +225,23 @@ class Checker:
 
                     if rs.endswith('"""'):
                         in_docs = False
+
         except IsADirectoryError:
             # Handle weird directories.
             ...
 
+    def set_lengths(
+        self, *, code: t.Optional[int] = None, docs: t.Optional[int] = None
+    ) -> None:
+        """Set the maximum line lengths for code and documentation."""
+        if code and code > 0:
+            self._code_length = code
+
+        if docs and docs > 0:
+            self._docs_length = docs
+
     def check(self, *paths: t.Union[Path, str]) -> t.Optional[str]:
-        """Checks to ensure the line lengths conform to PEP 8 standards.
+        """Check to ensure the line lengths conform to PEP 8 standards.
 
         Args:
             *paths: ``Path`` | ``str``
