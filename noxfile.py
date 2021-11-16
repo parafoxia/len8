@@ -110,7 +110,7 @@ def check_imports(session: nox.Session) -> None:
 
 @nox.session(reuse_venv=True)
 def check_typing(session: nox.Session) -> None:
-    session.install("-U", DEPS["mypy"])
+    session.install("-U", DEPS["mypy"], "-r", "requirements.txt")
     session.run("mypy", "len8")
 
 
