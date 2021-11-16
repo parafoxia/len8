@@ -38,5 +38,5 @@ __license__ = "BSD-3-Clause"
 __bugtracker__ = "https://github.com/parafoxia/len8/issues"
 __ci__ = "https://github.com/parafoxia/len8/actions"
 
+from .checker import Checker
 from .errors import *
-from .models import Checker
