@@ -32,8 +32,8 @@ from pathlib import Path
 
 import click
 
-from len8 import Checker
-from len8.errors import BadLines, InvalidPath
+from len8 import Checker, Config
+from len8.errors import BadLines, ConfigurationError, InvalidPath
 
 
 def _as_paths(value: str) -> t.Tuple[Path, ...]:
@@ -45,7 +45,7 @@ def _as_paths(value: str) -> t.Tuple[Path, ...]:
 
 @click.command()
 @click.version_option()
-@click.argument("paths", type=Path, required=True, nargs=-1)
+@click.argument("paths", type=Path, required=False, nargs=-1)
 @click.option(
     "-x",
     "--exclude",
@@ -77,23 +77,50 @@ def _as_paths(value: str) -> t.Tuple[Path, ...]:
     metavar="CHARS",
     help="Custom line length for comments and docstrings.",
 )
+@click.option(
+    "--config",
+    type=Path,
+    metavar="PATH",
+    default=Path("./pyproject.toml"),
+    help="The path to the toml configuration file to use.",
+)
 def len8(
     paths: t.Tuple[Path, ...],
     exclude: t.Tuple[Path, ...],
     extend_length: int,
     code_length: t.Optional[int],
     docs_length: t.Optional[int],
+    config: Path,
 ) -> None:
-    checker = Checker(
-        exclude=exclude,
-        extend=min(extend_length, 2),
-        max_code_length=code_length,
-        max_docs_length=docs_length,
-        strict=True,
-    )
+    cfg: t.Optional[Config] = None
 
     try:
-        checker.check(*paths)
+        cfg = Config(config)
+
+    except ConfigurationError:
+        checker = Checker(
+            exclude=exclude,
+            extend=min(extend_length, 2),
+            max_code_length=code_length,
+            max_docs_length=docs_length,
+            strict=True,
+        )
+
+    else:
+        checker = Checker.from_config(cfg)
+
+    try:
+        if paths:
+            checker.check(*paths)
+
+        else:
+            if cfg and cfg.include:
+                checker.check(*cfg.include)
+
+            else:
+                print(f"Error: Missing argument 'PATHS...'.")
+                sys.exit(1)
+
     except (BadLines, InvalidPath) as e:
         print(e)
         sys.exit(1)

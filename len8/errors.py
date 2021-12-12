@@ -26,7 +26,7 @@
 # OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 # OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-__all__ = ["BadLines", "InvalidPath", "Len8Error"]
+__all__ = ["Len8Error", "BadLines", "ConfigurationError", "InvalidPath"]
 
 from pathlib import Path
 
@@ -37,6 +37,10 @@ class Len8Error(Exception):
 
 class BadLines(Len8Error):
     """Raised when a file contains lines that are too long."""
+
+
+class ConfigurationError(Len8Error):
+    """Raised when configuration of the Checker fails."""
 
 
 class InvalidPath(Len8Error):
