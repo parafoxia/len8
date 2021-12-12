@@ -38,10 +38,10 @@ class Config:
     """A ``len8`` configuration generated from a toml file."""
 
     __slots__: t.Sequence[str] = (
-        "_include",
-        "_exclude",
         "_code_length",
         "_docs_length",
+        "_include",
+        "_exclude",
         "_is_configured",
         "_strict",
     )
@@ -133,6 +133,15 @@ class Checker:
             If True, raises an error if the check method fails. Defaults
             to ``True``.
     """
+
+    __slots__: t.Sequence[str] = (
+        "_bad_lines",
+        "_code_length",
+        "_docs_length",
+        "_exclude",
+        "_extend",
+        "_strict",
+    )
 
     def __init__(
         self,
