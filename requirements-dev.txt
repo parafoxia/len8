@@ -8,3 +8,4 @@ nox~=2021.10.1
 pytest~=6.2.0; python_version <= "3.10"
 git+https://github.com/pytest-dev/py; python_version == "3.11"
 sphinx~=4.2.0
+types-toml~=0.10.1
