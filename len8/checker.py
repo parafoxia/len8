@@ -26,10 +26,89 @@
 # OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 # OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
+import toml
 import typing as t
 from pathlib import Path
 
 from len8 import errors
+
+
+class Config:
+    """A ``len8`` configuration generated from a toml file."""
+
+    __slots__: t.Sequence[str] = (
+        "_include",
+        "_exclude",
+        "_code_length",
+        "_docs_length",
+        "_is_configured",
+        "_strict",
+    )
+
+    def __init__(self, path: t.Union[str, Path]) -> None:
+        self._include: t.Optional[t.List[str]] = None
+        self._exclude: t.Optional[t.List[str]] = None
+        self._code_length: t.Optional[int] = None
+        self._docs_length: t.Optional[int] = None
+        self._strict: bool = False
+        self._is_configured: bool = False
+
+        if not isinstance(path, Path):
+            path = Path(path)
+
+        if not path.is_file():
+            raise errors.ConfigurationError(
+                f"'{path}' is a directory, or does not exist"
+            )
+
+        with open(path) as f:
+            try:
+                len8 = toml.loads(f.read())["tool"]["len8"]
+            except toml.TomlDecodeError as e:
+                raise errors.ConfigurationError(
+                    f"Failed to parse configuration file\n{e}"
+                ) from None
+            except KeyError:
+                return None
+
+        self._include = len8.get("include")
+        self._exclude = len8.get("exclude")
+        self._code_length = len8.get("code-length")
+        self._docs_length = len8.get("docs-length")
+        self._strict = len8.get("strict", False)
+        self._is_configured = True
+
+    @property
+    def include(self) -> t.Optional[t.List[str]]:
+        """The optional paths to include in checking."""
+        return self._include
+
+    @property
+    def exclude(self) -> t.Optional[t.List[str]]:
+        """The optional paths to exclude from checking."""
+        return self._exclude
+
+    @property
+    def code_length(self) -> t.Optional[int]:
+        """The optional maximum length for code."""
+        return self._code_length
+
+    @property
+    def docs_length(self) -> t.Optional[int]:
+        """The optional maximum length for docs."""
+        return self._docs_length
+
+    @property
+    def strict(self) -> bool:
+        """If True, raises an error if the check method fails. Defaults
+        to ``False`` for ``Config``.
+        """
+        return self._strict
+
+    @property
+    def is_configured(self) -> bool:
+        """Whether or not this ``Config`` was successfully configued."""
+        return self._is_configured
 
 
 class Checker:
@@ -84,6 +163,31 @@ class Checker:
         self._docs_length = max_docs_length
         self._strict = strict
         self._bad_lines: t.List[t.Tuple[str, int, int, int]] = []
+
+    @classmethod
+    def from_config(cls, config: t.Union[str, Path, Config]) -> "Checker":
+        """Generate a new ``Checker`` from a toml configuration file.
+
+        Args:
+            path: ``str`` | ``pathlib.Path`` | ``len8.Config``
+                The path to the toml file to load configurations from,
+                or the already loaded ``len8.Config`` object.
+
+        Returns:
+            ``len8.Checker``
+        """
+        if not isinstance(config, Config):
+            config = Config(config)
+
+        if not config.is_configured:
+            return cls()
+
+        return cls(
+            exclude=config.exclude or [],
+            max_code_length=config.code_length,
+            max_docs_length=config.docs_length,
+            strict=config.strict,
+        )
 
     @property
     def bad_lines(self) -> t.Union[str, None]:

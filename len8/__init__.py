@@ -26,7 +26,7 @@
 # OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 # OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-__all__ = ["BadLines", "Checker" ,"InvalidPath", "Len8Error"]
+__all__ = ["BadLines", "Checker" ,"InvalidPath", "Len8Error", "Config"]
 
 __productname__ = "len8"
 __version__ = "0.5.0"
@@ -38,5 +38,5 @@ __license__ = "BSD-3-Clause"
 __bugtracker__ = "https://github.com/parafoxia/len8/issues"
 __ci__ = "https://github.com/parafoxia/len8/actions"
 
-from .checker import Checker
+from .checker import Checker, Config
 from .errors import *
