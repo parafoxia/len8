@@ -108,8 +108,11 @@ def len8(
 
     else:
         checker = Checker.from_config(cfg)
+        checker.strict = True
         checker.set_lengths(code=code_length or -1, docs=docs_length or -1)
-        checker.exclude = list(exclude) or checker.exclude
+
+        if exclude:
+            checker.exclude = list(exclude)
 
     try:
         if paths:
