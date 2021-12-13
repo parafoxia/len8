@@ -1,0 +1,6 @@
+[tool.len8]
+include = ["tests/testdata.py"]
+exclude = ["tests/exclude.py"]
+code-length = 88
+docs-length = 69
+strict = true

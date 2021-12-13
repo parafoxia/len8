@@ -6,7 +6,7 @@ requires = [
 build-backend = "setuptools.build_meta"
 
 [tool.black]
-extend-exclude = "len8/__init__.py|tests/testdata.py"
+extend-exclude = "len8/__init__.py|tests/testdata.py|tests/exclude.py"
 line-length = 79
 
 [tool.isort]
@@ -15,4 +15,4 @@ profile = "black"
 [tool.mypy]
 strict = true
 ignore_missing_imports = true
-exclude = "tests/testdata.py"
+exclude = "tests/testdata.py|tests/exclude.py"
