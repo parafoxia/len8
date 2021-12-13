@@ -110,6 +110,7 @@ def len8(
     else:
         checker = Checker.from_config(cfg)
         checker.strict = True
+        checker.extend = extend_length
         checker.set_lengths(code=code_length or -1, docs=docs_length or -1)
 
         if exclude:
