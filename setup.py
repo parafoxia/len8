@@ -28,6 +28,7 @@
 
 import sys
 import typing as t
+from collections import defaultdict
 
 if sys.version_info < (3, 6, 0):
     print(
@@ -46,30 +47,30 @@ def parse_requirements(path: str) -> t.List[str]:
 
 
 with open("./len8/__init__.py") as f:
-    (
-        productname,
-        version,
-        description,
-        url,
-        docs,
-        author,
-        license_,
-        bug_tracker,
-        ci,
-    ) = [l.split('"')[1] for l in f.readlines()[30:39]]
+    attrs = defaultdict(str)
+
+    for line in f:
+        if not line.startswith("__"):
+            continue
+
+        k, v = line.split(" = ")
+        if k == "__all__":
+            continue
+
+        attrs[k[2:-2]] = v.strip().replace('"', "")
 
 with open("./README.md") as f:
     long_description = f.read()
 
 setuptools.setup(
-    name=productname,
-    version=version,
-    description=description,
+    name=attrs["productname"],
+    version=attrs["version"],
+    description=attrs["description"],
     long_description=long_description,
     long_description_content_type="text/markdown",
-    url=url,
-    author=author,
-    license=license_,
+    url=attrs["url"],
+    author=attrs["author"],
+    license=attrs["license_"],
     classifiers=[
         # "Development Status :: 1 - Planning",
         # "Development Status :: 2 - Pre-Alpha",
@@ -98,10 +99,10 @@ setuptools.setup(
         "Typing :: Typed",
     ],
     project_urls={
-        "Documentation": docs,
-        "Source": url,
-        "Bug Tracker": bug_tracker,
-        "CI": ci,
+        "Documentation": attrs["docs"],
+        "Source": attrs["url"],
+        "Bug Tracker": attrs["bug_tracker"],
+        "CI": attrs["ci"],
     },
     install_requires=parse_requirements("./requirements.txt"),
     entry_points={"console_scripts": ["len8 = len8.cli:len8"]},
