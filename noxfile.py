@@ -113,7 +113,6 @@ def check_typing(session: nox.Session) -> None:
     session.install(
         "-U",
         DEPS["mypy"],
-        "-U",
         DEPS["types-toml"],
         "-r",
         "requirements.txt",
