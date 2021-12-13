@@ -100,6 +100,34 @@ bad_lines = checker.check(".")
 print(bad_lines)
 ```
 
+## Configuration
+
+len8 supports toml configuration files, by default `pyproject.toml` in your project
+root will be used. You may specify a different configuration file via the `--config`
+cli flag.
+
+```toml
+[tool.len8]
+include = ["myapp"]
+exclude = ["secrets", "testing"]
+code-length = 88
+docs-length = 69
+strict = true
+```
+
+It's easy to take advantage of configuration files from a Python script as well.
+
+```py
+from len8 import Checker, Config
+
+# Valid
+checker = Checker.from_config("./myconfig.toml")
+
+# Also valid
+cfg = Config("./myconfig.toml")
+checker = Checker.from_config(cfg)
+```
+
 ## Contributing
 
 len8 is open to contributions. To find out where to get started, have a look at the [contributing guide](https://github.com/parafoxia/len8/blob/main/CONTRIBUTING.md).
