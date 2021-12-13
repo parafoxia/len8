@@ -1,4 +1,4 @@
-# Copyright (c) 2021, Ethan Henderson, Jonxslays
+# Copyright (c) 2021, Ethan Henderson
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
@@ -26,35 +26,52 @@
 # OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 # OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-import os
+import re
+import sys
 import typing as t
 from pathlib import Path
 
 import nox
 
-PROJECT_NAME = "len8"
-LIB_DIR = Path(__file__).parent / PROJECT_NAME
-TEST_DIR = Path(__file__).parent / "tests"
+PROJECT_DIR = Path(__file__).parent
+TEST_DIR = PROJECT_DIR / "tests"
+
+PROJECT_NAME = Path(__file__).parent.stem
+
+CHECK_PATHS = (
+    str(PROJECT_DIR / PROJECT_NAME),
+    str(TEST_DIR),
+    str(PROJECT_DIR / "noxfile.py"),
+    str(PROJECT_DIR / "setup.py"),
+)
+
+DEP_PATTERN = re.compile("([a-zA-Z0-9-_]*)[=~<>,.0-9ab]*")
 
 
-def parse_requirements(path: str) -> t.List[str]:
-    with open(path, mode="r", encoding="utf-8") as f:
-        deps = (d.strip() for d in f.readlines())
-        return [d for d in deps if not d.startswith(("#", "-r", "."))]
+def fetch_installs(*categories: str) -> t.List[str]:
+    installs = []
+
+    with open(PROJECT_DIR / "requirements-dev.txt") as f:
+        in_cat = None
+
+        for line in f:
+            if line.startswith("#") and line[2:].strip() in categories:
+                in_cat = True
+                continue
+
+            if in_cat:
+                if line == "\n":
+                    in_cat = False
+                    continue
+
+                installs.append(line.strip())
+
+    return installs
 
 
-DEPS = {
-    dep.split("~=")[0]: dep
-    for dep in [
-        *parse_requirements("./requirements-dev.txt"),
-        *parse_requirements("./requirements-nox.txt"),
-    ]
-}
-
-
-@nox.session(reuse_venv=True)
+@nox.session(reuse_venv=True)  # type: ignore
 def tests(session: nox.Session) -> None:
-    session.install("-U", "-r", "./requirements-nox.txt")
+    session.install("-U", *fetch_installs("Tests"), ".")
     session.run(
         "coverage",
         "run",
@@ -62,42 +79,24 @@ def tests(session: nox.Session) -> None:
         "tests/*",
         "-m",
         "pytest",
-        "--testdox",
-        "--log-level=INFO",
+        "--log-level=1",
     )
-
-
-@nox.session(reuse_venv=True)
-def check_coverage(session: nox.Session) -> None:
-    session.install("-U", DEPS["coverage"])
-
-    if not os.path.isfile(Path(__file__).parent / ".coverage"):
-        session.skip("No coverage to check")
-
     session.run("coverage", "report", "-m")
 
 
-# @nox.session(reuse_venv=True)
-# def check_docs_build(session: nox.Session) -> None:
-#     session.install("-U", DEPS["sphinx"], DEPS["furo"], ".")
-#     session.cd("./docs")
-#     session.run("make", "html")
-
-
-@nox.session(reuse_venv=True)
+@nox.session(reuse_venv=True)  # type: ignore
 def check_formatting(session: nox.Session) -> None:
-    session.install("-U", DEPS["black"])
+    session.install("-U", *fetch_installs("Formatting"))
     session.run("black", ".", "--check")
 
 
-@nox.session(reuse_venv=True)
+@nox.session(reuse_venv=True)  # type: ignore
 def check_imports(session: nox.Session) -> None:
-    session.install("-U", DEPS["flake8"], DEPS["isort"])
+    session.install("-U", *fetch_installs("Imports"))
     # flake8 doesn't use the gitignore so we have to be explicit.
     session.run(
         "flake8",
-        PROJECT_NAME,
-        "tests",
+        *CHECK_PATHS,
         "--select",
         "F4",
         "--extend-ignore",
@@ -105,30 +104,23 @@ def check_imports(session: nox.Session) -> None:
         "--extend-exclude",
         "__init__.py",
     )
-    session.run("isort", ".", "-cq", "--profile", "black")
+    session.run("isort", *CHECK_PATHS, "-cq")
 
 
-@nox.session(reuse_venv=True)
+@nox.session(reuse_venv=True)  # type: ignore
 def check_typing(session: nox.Session) -> None:
-    session.install(
-        "-U",
-        DEPS["mypy"],
-        DEPS["types-toml"],
-        "-r",
-        "requirements.txt",
-    )
-    session.run("mypy", "len8", "tests")
+    session.install("-U", *fetch_installs("Typing"), "-r", "requirements.txt")
+    session.run("mypy", *CHECK_PATHS)
 
 
-@nox.session(reuse_venv=True)
+@nox.session(reuse_venv=True)  # type: ignore
 def check_licensing(session: nox.Session) -> None:
-    missing: list[Path] = []
+    missing = []
 
     for p in [
-        *LIB_DIR.rglob("*.py"),
+        *(PROJECT_DIR / PROJECT_NAME).rglob("*.py"),
         *TEST_DIR.glob("*.py"),
-        Path(__file__),
-        Path(__file__).parent / "setup.py",
+        *PROJECT_DIR.glob("*.py"),
     ]:
         with open(p) as f:
             if not f.read().startswith("# Copyright (c)"):
@@ -139,3 +131,33 @@ def check_licensing(session: nox.Session) -> None:
             f"\n{len(missing):,} file(s) are missing their licenses:\n"
             + "\n".join(f" - {file}" for file in missing)
         )
+
+
+@nox.session(reuse_venv=True)  # type: ignore
+def check_spelling(session: nox.Session) -> None:
+    session.install("-U", *fetch_installs("Spelling"))
+    session.run("codespell", *CHECK_PATHS)
+
+
+@nox.session(reuse_venv=True)  # type: ignore
+def check_safety(session: nox.Session) -> None:
+    if sys.version_info >= (3, 11):
+        session.skip("Safety does not support Python 3.11")
+
+    # with open(PROJECT_DIR / "docs/requirements.txt") as f:
+    #     installs = f.read().splitlines()[1:]
+    installs = []
+
+    for p in list(PROJECT_DIR.glob("requirements*.txt")):
+        installs.extend(["-r", f"{p}"])
+
+    # Needed due to https://github.com/pypa/pip/pull/9827.
+    session.install("-U", "pip")
+    session.install("-U", *installs)
+    session.run("safety", "check", "--full-report")
+
+
+@nox.session(reuse_venv=True)  # type: ignore
+def check_security(session: nox.Session) -> None:
+    session.install("-U", *fetch_installs("Security"))
+    session.run("bandit", "-qr", *CHECK_PATHS, "-s", "B101")

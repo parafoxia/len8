@@ -70,7 +70,7 @@ setuptools.setup(
     long_description_content_type="text/markdown",
     url=attrs["url"],
     author=attrs["author"],
-    license=attrs["license_"],
+    license=attrs["license"],
     classifiers=[
         # "Development Status :: 1 - Planning",
         # "Development Status :: 2 - Pre-Alpha",
@@ -101,7 +101,7 @@ setuptools.setup(
     project_urls={
         "Documentation": attrs["docs"],
         "Source": attrs["url"],
-        "Bug Tracker": attrs["bug_tracker"],
+        "Bug Tracker": attrs["bugtracker"],
         "CI": attrs["ci"],
     },
     install_requires=parse_requirements("./requirements.txt"),

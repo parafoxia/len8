@@ -108,7 +108,8 @@ class Config:
 
     @property
     def is_configured(self) -> bool:
-        """Whether or not this ``Config`` was successfully configued."""
+        """Whether or not this ``Config`` was successfully
+        configured."""
         return self._is_configured
 
 

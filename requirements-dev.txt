@@ -1,11 +1,34 @@
-black~=21.10b0
-build~=0.7.0
+# Meta
+-e .
+-r requirements.txt
+
+# Sessions
+nox==2021.10.1
+
+# Docs
+furo==2021.10.9
+sphinx<5,>=4
+
+# Formatting
+black==21.12b0
+
+# Imports
 flake8~=4.0.0
-furo~=2021.10.9
-isort~=5.9.3
-mypy~=0.910
-nox~=2021.10.1
-pytest~=6.2.0; python_version <= "3.10"
-git+https://github.com/pytest-dev/py; python_version == "3.11"
-sphinx~=4.2.0
+isort~=5.10.0
+
+# Typing
+mypy==0.910
 types-toml~=0.10.1
+
+# Spelling
+codespell~=2.1.0
+
+# Tests
+coverage~=6.0.0
+pytest==7.0.0rc1
+
+# Safety
+safety~=1.10; python_version < "3.11"
+
+# Security
+bandit~=1.7.0
