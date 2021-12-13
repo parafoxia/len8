@@ -189,9 +189,6 @@ class Checker:
         if not isinstance(config, Config):
             config = Config(config)
 
-        if not config.is_configured:
-            return cls()
-
         return cls(
             exclude=config.exclude or [],
             max_code_length=config.code_length,

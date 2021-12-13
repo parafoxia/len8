@@ -26,7 +26,14 @@
 # OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 # OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-__all__ = ["BadLines", "Checker" ,"InvalidPath", "Len8Error", "Config"]
+__all__ = [
+    "BadLines",
+    "Checker",
+    "Config",
+    "ConfigurationError",
+    "InvalidPath",
+    "Len8Error",
+]
 
 __productname__ = "len8"
 __version__ = "0.5.0"
