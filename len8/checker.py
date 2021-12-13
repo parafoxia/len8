@@ -337,7 +337,7 @@ class Checker:
                     if rs.endswith('"""'):
                         in_docs = False
 
-        except IsADirectoryError:
+        except (IsADirectoryError, PermissionError):
             # Handle weird directories.
             ...
 
