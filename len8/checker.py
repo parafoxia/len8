@@ -59,7 +59,7 @@ class Config:
 
         if not path.is_file():
             raise errors.ConfigurationError(
-                f"'{path}' is a directory, or does not exist"
+                f"'{path}' is not a valid configuration file."
             )
 
         with open(path) as f:
