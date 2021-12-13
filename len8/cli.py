@@ -97,7 +97,8 @@ def len8(
     try:
         cfg = Config(config)
 
-    except ConfigurationError:
+    except ConfigurationError as e:
+        print(e)
         checker = Checker(
             exclude=exclude,
             extend=min(extend_length, 2),
