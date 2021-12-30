@@ -1,4 +1,4 @@
-# Copyright (c) Whoever, whenever
+# Copyright (c) 2021-2022, Whoever, whenever
 # This is part of the license, so this particularly long line won't get picked up.
 
 # This isn't part of the license, so this line will get picked up. How cool!

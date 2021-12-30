@@ -1,4 +1,4 @@
-# Copyright (c) 2021, Ethan Henderson
+# Copyright (c) 2021-2022, Ethan Henderson
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
@@ -123,7 +123,7 @@ def check_licensing(session: nox.Session) -> None:
         *PROJECT_DIR.glob("*.py"),
     ]:
         with open(p) as f:
-            if not f.read().startswith("# Copyright (c)"):
+            if not f.read().startswith("# Copyright (c) 2021-2022"):
                 missing.append(p)
 
     if missing:

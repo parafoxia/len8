@@ -1,4 +1,4 @@
-# Copyright (c) 2021, Ethan Henderson, Jonxslays
+# Copyright (c) 2021-2022, Ethan Henderson, Jonxslays
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
