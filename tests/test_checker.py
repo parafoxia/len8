@@ -139,10 +139,11 @@ def test_setting_lengths(default_checker: len8.Checker) -> None:
 
 def test_non_strict_output(default_checker: len8.Checker) -> None:
     output = (
-        "3 line(s) are too long:\n"
-        f"- {TEST_FILE}, line 4 (76/72)\n"
-        f"- {TEST_FILE}, line 5 (83/79)\n"
-        f"- {TEST_FILE}, line 11 (78/72)"
+        f"\33[1m{TEST_FILE}\33[0m\n"
+        "  * Line 4 (76/72)\n"
+        "  * Line 5 (83/79)\n"
+        "  * Line 11 (78/72)\n\n"
+        f"\33[1m\33[31mFound 3 problems\33[0m"
     )
     assert default_checker.check(TEST_FILE) == output
 
@@ -150,9 +151,10 @@ def test_non_strict_output(default_checker: len8.Checker) -> None:
 def test_non_strict_output_extended(default_checker: len8.Checker) -> None:
     default_checker.extend = 2
     output = (
-        "2 line(s) are too long:\n"
-        f"- {TEST_FILE}, line 4 (76/72)\n"
-        f"- {TEST_FILE}, line 11 (78/72)"
+        f"\33[1m{TEST_FILE}\33[0m\n"
+        "  * Line 4 (76/72)\n"
+        "  * Line 11 (78/72)\n\n"
+        f"\33[1m\33[31mFound 2 problems\33[0m"
     )
     assert default_checker.check(TEST_FILE) == output
     assert default_checker.check(TEST_FILE.parent) == output
@@ -161,10 +163,11 @@ def test_non_strict_output_extended(default_checker: len8.Checker) -> None:
 def test_strict_output(default_checker: len8.Checker) -> None:
     default_checker.strict = True
     output = (
-        "3 line(s) are too long:\n"
-        f"- {TEST_FILE}, line 4 (76/72)\n"
-        f"- {TEST_FILE}, line 5 (83/79)\n"
-        f"- {TEST_FILE}, line 11 (78/72)"
+        f"\33[1m{TEST_FILE}\33[0m\n"
+        "  * Line 4 (76/72)\n"
+        "  * Line 5 (83/79)\n"
+        "  * Line 11 (78/72)\n\n"
+        f"\33[1m\33[31mFound 3 problems\33[0m"
     )
     with pytest.raises(BadLines) as exc:
         assert default_checker.check(TEST_FILE) == output
@@ -197,10 +200,11 @@ def test_file_validation(default_checker: len8.Checker) -> None:
 
 def test_pathlib_conversion_on_check(default_checker: len8.Checker) -> None:
     output = (
-        "3 line(s) are too long:\n"
-        f"- {TEST_FILE}, line 4 (76/72)\n"
-        f"- {TEST_FILE}, line 5 (83/79)\n"
-        f"- {TEST_FILE}, line 11 (78/72)"
+        f"\33[1m{TEST_FILE}\33[0m\n"
+        "  * Line 4 (76/72)\n"
+        "  * Line 5 (83/79)\n"
+        "  * Line 11 (78/72)\n\n"
+        f"\33[1m\33[31mFound 3 problems\33[0m"
     )
     assert default_checker.check(f"{TEST_FILE}") == output
 

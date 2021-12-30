@@ -208,10 +208,16 @@ class Checker:
         if not self._bad_lines:
             return None
 
-        return f"{len(self._bad_lines)} line(s) are too long:\n" + "\n".join(
-            f"- {file}, line {line} ({chars}/{limit})"
-            for file, line, chars, limit in self._bad_lines
-        )
+        bl = ""
+
+        for file, line, chars, limit in self._bad_lines:
+            if file not in bl:
+                bl += f"\33[1m{file}\33[0m\n"
+
+            bl += f"  * Line {line} ({chars}/{limit})\n"
+
+        bl += f"\n\33[1m\33[31mFound {len(self._bad_lines):,} problems\33[0m"
+        return bl
 
     @property
     def exclude(self) -> t.List[Path]:
