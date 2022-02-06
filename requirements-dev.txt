@@ -24,7 +24,8 @@ types-toml~=0.10.3
 codespell~=2.1.0
 
 # Tests
-coverage~=6.3.1
+coverage~=6.3.1; python_version > "3.6"
+coverage~=6.2.0; python_version == "3.6"
 pytest~=7.0.0
 
 # Safety
