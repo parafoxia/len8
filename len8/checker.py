@@ -216,7 +216,7 @@ class Checker:
 
             bl += f"  * Line {line} ({chars}/{limit})\n"
 
-        bl += f"\n\33[1m\33[31mFound {len(self._bad_lines):,} problems\33[0m"
+        bl += f"\n\33[1m\33[31mFound {len(self._bad_lines):,} problem(s)\33[0m"
         return bl
 
     @property
