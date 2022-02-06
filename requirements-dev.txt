@@ -3,32 +3,32 @@
 -r requirements.txt
 
 # Sessions
-nox==2021.10.1
+nox==2022.1.7
 
 # Docs
-furo==2021.10.9
+furo
 sphinx<5,>=4
 
 # Formatting
-black==21.12b0
+black~=22.1.0
 
 # Imports
-flake8~=4.0.0
+flake8~=4.0.1
 isort~=5.10.0
 
 # Typing
-mypy==0.910
-types-toml~=0.10.1
+mypy==0.931
+types-toml~=0.10.3
 
 # Spelling
 codespell~=2.1.0
 
 # Tests
-coverage~=6.0.0
-pytest==7.0.0rc1
+coverage~=6.3.1
+pytest~=7.0.0
 
 # Safety
-safety~=1.10; python_version < "3.11"
+safety~=1.10.3; python_version < "3.11"
 
 # Security
-bandit~=1.7.0
+bandit~=1.7.2
