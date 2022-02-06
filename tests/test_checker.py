@@ -143,7 +143,7 @@ def test_non_strict_output(default_checker: len8.Checker) -> None:
         "  * Line 4 (76/72)\n"
         "  * Line 5 (83/79)\n"
         "  * Line 11 (78/72)\n\n"
-        f"\33[1m\33[31mFound 3 problems\33[0m"
+        f"\33[1m\33[31mFound 3 problem(s)\33[0m"
     )
     assert default_checker.check(TEST_FILE) == output
 
@@ -154,7 +154,7 @@ def test_non_strict_output_extended(default_checker: len8.Checker) -> None:
         f"\33[1m{TEST_FILE}\33[0m\n"
         "  * Line 4 (76/72)\n"
         "  * Line 11 (78/72)\n\n"
-        f"\33[1m\33[31mFound 2 problems\33[0m"
+        f"\33[1m\33[31mFound 2 problem(s)\33[0m"
     )
     assert default_checker.check(TEST_FILE) == output
     assert default_checker.check(TEST_FILE.parent) == output
@@ -167,7 +167,7 @@ def test_strict_output(default_checker: len8.Checker) -> None:
         "  * Line 4 (76/72)\n"
         "  * Line 5 (83/79)\n"
         "  * Line 11 (78/72)\n\n"
-        f"\33[1m\33[31mFound 3 problems\33[0m"
+        f"\33[1m\33[31mFound 3 problem(s)\33[0m"
     )
     with pytest.raises(BadLines) as exc:
         assert default_checker.check(TEST_FILE) == output
@@ -204,7 +204,7 @@ def test_pathlib_conversion_on_check(default_checker: len8.Checker) -> None:
         "  * Line 4 (76/72)\n"
         "  * Line 5 (83/79)\n"
         "  * Line 11 (78/72)\n\n"
-        f"\33[1m\33[31mFound 3 problems\33[0m"
+        f"\33[1m\33[31mFound 3 problem(s)\33[0m"
     )
     assert default_checker.check(f"{TEST_FILE}") == output
 
@@ -239,8 +239,9 @@ def test_invalid_config_init() -> None:
     with pytest.raises(len8.ConfigurationError) as e:
         _ = len8.Config(TEST_NON_VALID)
 
-    assert str(e.value) == (
-        f"'{TEST_NON_VALID}' is not a valid configuration file."
+    assert (
+        str(e.value)
+        == f"'{TEST_NON_VALID}' is not a valid configuration file."
     )
 
 
@@ -271,8 +272,9 @@ def test_checker_from_invalid_config() -> None:
     with pytest.raises(len8.ConfigurationError) as e:
         _ = len8.Checker.from_config(TEST_NON_VALID)
 
-    assert str(e.value) == (
-        f"'{TEST_NON_VALID}' is not a valid configuration file."
+    assert (
+        str(e.value)
+        == f"'{TEST_NON_VALID}' is not a valid configuration file."
     )
 
 
