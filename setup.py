@@ -103,6 +103,7 @@ setuptools.setup(
         "Source": attrs["url"],
         "Bug Tracker": attrs["bugtracker"],
         "CI": attrs["ci"],
+        "Changelog": attrs["changelog"],
     },
     install_requires=parse_requirements("./requirements.txt"),
     entry_points={"console_scripts": ["len8 = len8.cli:len8"]},
