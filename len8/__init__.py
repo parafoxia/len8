@@ -36,7 +36,7 @@ __all__ = [
 ]
 
 __productname__ = "len8"
-__version__ = "0.7.1"
+__version__ = "0.7.2"
 __description__ = "A utility for keeping line lengths within PEP 8 standards."
 __url__ = "https://github.com/parafoxia/len8"
 __docs__ = "https://len8.readthedocs.io/en/latest/"

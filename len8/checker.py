@@ -26,12 +26,15 @@
 # OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 # OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
+import re
 import typing as t
 from pathlib import Path
 
 import toml
 
 from len8 import errors
+
+TRIPLE_QUOTE_PATTERN = re.compile(r'[bfr]?"""[^.]')
 
 
 class Config:
@@ -326,7 +329,7 @@ class Checker:
 
                         in_license = False
 
-                    if ls.startswith(('"""', 'r"""')):
+                    if TRIPLE_QUOTE_PATTERN.match(ls):
                         in_docs = True
 
                     chars = len(rs)
