@@ -71,7 +71,7 @@ def fetch_installs(*categories: str) -> t.List[str]:
 
 @nox.session(reuse_venv=True)  # type: ignore
 def tests(session: nox.Session) -> None:
-    session.install("-U", *fetch_installs("Tests"), ".")
+    session.install(*fetch_installs("Tests"), ".")
     session.run(
         "coverage",
         "run",
@@ -86,13 +86,13 @@ def tests(session: nox.Session) -> None:
 
 @nox.session(reuse_venv=True)  # type: ignore
 def check_formatting(session: nox.Session) -> None:
-    session.install("-U", *fetch_installs("Formatting"))
+    session.install(*fetch_installs("Formatting"))
     session.run("black", ".", "--check")
 
 
 @nox.session(reuse_venv=True)  # type: ignore
 def check_imports(session: nox.Session) -> None:
-    session.install("-U", *fetch_installs("Imports"))
+    session.install(*fetch_installs("Imports"))
     # flake8 doesn't use the gitignore so we have to be explicit.
     session.run(
         "flake8",
@@ -109,7 +109,7 @@ def check_imports(session: nox.Session) -> None:
 
 @nox.session(reuse_venv=True)  # type: ignore
 def check_typing(session: nox.Session) -> None:
-    session.install("-U", *fetch_installs("Typing"), "-r", "requirements.txt")
+    session.install(*fetch_installs("Typing"), "-r", "requirements.txt")
     session.run("mypy", *CHECK_PATHS)
 
 
@@ -135,7 +135,7 @@ def check_licensing(session: nox.Session) -> None:
 
 @nox.session(reuse_venv=True)  # type: ignore
 def check_spelling(session: nox.Session) -> None:
-    session.install("-U", *fetch_installs("Spelling"))
+    session.install(*fetch_installs("Spelling"))
     session.run("codespell", *CHECK_PATHS)
 
 
@@ -152,12 +152,12 @@ def check_safety(session: nox.Session) -> None:
         installs.extend(["-r", f"{p}"])
 
     # Needed due to https://github.com/pypa/pip/pull/9827.
-    session.install("-U", "pip")
-    session.install("-U", *installs)
+    session.install("pip")
+    session.install(*installs)
     session.run("safety", "check", "--full-report")
 
 
 @nox.session(reuse_venv=True)  # type: ignore
 def check_security(session: nox.Session) -> None:
-    session.install("-U", *fetch_installs("Security"))
+    session.install(*fetch_installs("Security"))
     session.run("bandit", "-qr", *CHECK_PATHS, "-s", "B101")
