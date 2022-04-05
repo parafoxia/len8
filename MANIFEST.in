@@ -4,4 +4,5 @@ include README.md
 include pyproject.toml
 include requirements.txt
 include setup.py
+include len8/py.typed
 global-exclude *.py[cod]
