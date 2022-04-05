@@ -26,7 +26,8 @@ codespell~=2.1.0
 # Tests
 coverage~=6.3.2; python_version > "3.6"
 coverage~=6.2.0; python_version == "3.6"
-pytest~=7.1.1
+pytest~=7.1.1; python_version > "3.6"
+pytest~=7.0.1; python_version == "3.6"
 
 # Safety
 safety~=1.10.3; python_version < "3.11"
