@@ -10,26 +10,29 @@ furo
 sphinx<5,>=4
 
 # Formatting
-black~=22.1.0
+black~=22.3.0
 
 # Imports
 flake8~=4.0.1
 isort~=5.10.0
 
 # Typing
-mypy==0.931
+mypy==0.942
 types-toml~=0.10.3
 
 # Spelling
 codespell~=2.1.0
 
 # Tests
-coverage~=6.3.1; python_version > "3.6"
+coverage~=6.3.2; python_version > "3.6"
 coverage~=6.2.0; python_version == "3.6"
-pytest~=7.0.0
+pytest~=7.1.1
 
 # Safety
 safety~=1.10.3; python_version < "3.11"
 
 # Security
 bandit~=1.7.2
+
+# Dependencies
+deputil~=0.2.0

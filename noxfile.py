@@ -161,3 +161,9 @@ def check_safety(session: nox.Session) -> None:
 def check_security(session: nox.Session) -> None:
     session.install(*fetch_installs("Security"))
     session.run("bandit", "-qr", *CHECK_PATHS, "-s", "B101")
+
+
+# @nox.session(reuse_venv=True)  # type: ignore
+# def dependencies(session: nox.Session) -> None:
+#     session.install(*fetch_installs("Dependencies"))
+#     session.run("deputil", "update", "requirements-dev.txt")
