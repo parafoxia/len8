@@ -108,5 +108,6 @@ setuptools.setup(
     install_requires=parse_requirements("./requirements.txt"),
     entry_points={"console_scripts": ["len8 = len8.cli:len8"]},
     python_requires=">=3.6.0,<3.12",
+    include_package_data=True,
     packages=setuptools.find_packages(),
 )
